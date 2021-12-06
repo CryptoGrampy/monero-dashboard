@@ -1,14 +1,15 @@
 {
-  "name": "angular-electron",
+  "name": "angular-electron-monero-boilerplate",
   "version": "10.4.1",
-  "description": "Angular 13 with Electron 16 (Typescript + SASS + Hot Reload)",
+  "description": "Angular/Electron/Typescript/Monero",
   "homepage": "https://github.com/maximegris/angular-electron",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "CryptoGrampy",
+    "email": "cryptogrampy@protonmail.com"
   },
   "keywords": [
     "angular",
+    "monero",
     "angular 13",
     "electron",
     "electron 16",

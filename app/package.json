@@ -3,5 +3,9 @@
   "version": "10.4.1",
   "main": "main.js",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "electron-store": "^8.0.1",
+    "monero-javascript": "^0.5.9",
+    "rxjs": "^7.4.0"
+  }
 }

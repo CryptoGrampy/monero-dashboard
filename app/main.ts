@@ -2,12 +2,29 @@ import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
+import { MonerodService } from './MonerodService'
+import { TrayService } from './TrayService';
 
 let win: BrowserWindow = null;
+let moneroService = new MonerodService()
+
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
+const bootstrap = async () => {
+  if (moneroService.getMonerodFilepath() === undefined) {
+    moneroService.askMonerodFilePath()
+  }
+
+  const trayManager = new TrayService(moneroService)
+
+  if (trayManager.getAutostart() === true && moneroService.getMonerodFilepath() !== undefined) {
+    await moneroService.startDaemon()
+  }
+}
+
 function createWindow(): BrowserWindow {
+  bootstrap()
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
