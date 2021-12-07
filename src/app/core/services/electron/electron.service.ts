@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
@@ -5,15 +6,21 @@ import { Injectable } from '@angular/core';
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import { WidgetEnum } from '../widget-enum';
+
+enum IpcInvokeEnum {
+  SAVE_DATA = 'save-data',
+  LOAD_DATA = 'load-data'
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ElectronService {
-  ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
   childProcess: typeof childProcess;
   fs: typeof fs;
+  ipcRenderer: typeof ipcRenderer;
 
   constructor() {
     // Conditional imports
@@ -38,7 +45,15 @@ export class ElectronService {
     }
   }
 
-  get isElectron(): boolean {
+  public get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
+  }
+
+  public loadData(storeKey: WidgetEnum) {
+    return this.ipcRenderer.invoke(IpcInvokeEnum.LOAD_DATA, storeKey);
+  }
+
+  public saveData(storeKey: WidgetEnum, data: any) {
+    return this.ipcRenderer.invoke(IpcInvokeEnum.SAVE_DATA, storeKey, data);
   }
 }

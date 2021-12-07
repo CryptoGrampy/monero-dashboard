@@ -1,0 +1,17 @@
+- Dashboard store - takes widget name enum as key
+
+Widget State
+SomeService.subscribeToWidgetStateChanges().Widget-Name
+or getStateByWidgetName(widgetName) => of(currentState?.WidgetName)
+
+sends syncronous state change
+setMyWidgetState.state(widgetName, state change: IMyWidgetState)
+
+public usable api's
+monerod
+  - subscribeToMonerodState()
+  - turnOff
+  - turnOn
+  - setConfig
+  - callUpdateFileLocation
+  - setAutostart

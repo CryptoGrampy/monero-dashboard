@@ -38,7 +38,18 @@ export interface MoneroDaemonState {
   difficulty: any
 }
 
+enum MonerodStatus {
+  ONLINE = 'Monero Node: Online',
+  STARTING = 'Monero Node: Starting Up... Please Hold',
+  SYNCING = 'Monero Node: Syncing',
+  STOPPING = 'Monero Node: Shutting Down',
+  STOPPED = 'Monero Node Stopped',
+  OFFLINE = 'Monero Node: Offline',
+  ERROR = 'Monero Node: Not Detected',
+}
+
 // Store user's Monerod settings via electron-store.
+// https://paircoders.com/2020/07/04/add-and-update-values-in-behaviorsubject-angular/
 interface MonerodStore {
   monerodStore: {
     filepath?: string
@@ -48,6 +59,7 @@ interface MonerodStore {
 }
 
 // TODO: Add linter/organize/review public private methods in class
+// TODO: Implement this as a singleton
 export class MonerodService {
   private readonly store = new ElectronStore<MonerodStore>()
   private readonly monerodLatestDataSubject: Subject<MoneroDaemonState> = new Subject();

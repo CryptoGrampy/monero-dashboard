@@ -1,9 +1,14 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import { MonerodService } from './MonerodService'
 import { TrayService } from './TrayService';
+
+enum IpcInvokeEnum {
+  SAVE_DATA = 'save-data',
+  LOAD_DATA = 'load-data'
+}
 
 let win: BrowserWindow = null;
 let moneroService = new MonerodService()
@@ -21,6 +26,17 @@ const bootstrap = async () => {
   if (trayManager.getAutostart() === true && moneroService.getMonerodFilepath() !== undefined) {
     await moneroService.startDaemon()
   }
+
+  ipcMain.handle(IpcInvokeEnum.SAVE_DATA, async (event, storeKey, data) => {
+    console.log(event)
+    console.log(storeKey)
+    console.log(data)
+  })
+
+  ipcMain.handle(IpcInvokeEnum.LOAD_DATA, async (event, storeKey) => {
+    console.log(event)
+    console.log(storeKey)
+  })
 }
 
 function createWindow(): BrowserWindow {

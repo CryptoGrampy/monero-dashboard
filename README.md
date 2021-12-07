@@ -7,6 +7,7 @@
 - [ ] Get Monerod updater working
 - [ ] Add Drag and Drop library
 - [ ] Clean up back end code / Electron main.ts
+- [ ] Add Typescript/ESlint rules
 - [ ] Improve back end Monerod state manager
 - [ ] Create Widget template and interface to implement
 
@@ -22,9 +23,11 @@
   - Mining controls similar to Feather Wallet
 - Social
   - Current CCS list
+  - Monero.Observer rss
   - Monero Bounties
   - Chat?
   - XMR.radio player
+- Donation
 
 ## Architecture thoughts
 
