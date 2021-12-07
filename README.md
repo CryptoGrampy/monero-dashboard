@@ -4,7 +4,9 @@
 - [ ] Create Front end rxjs data store
 - [ ] Create Back end data store for Dashboard state, widget state
 - [ ] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
+- [ ] Get Monerod updater working
 - [ ] Add Drag and Drop library
+- [ ] Clean up back end code / Electron main.ts
 - [ ] Improve back end Monerod state manager
 - [ ] Create Widget template and interface to implement
 
