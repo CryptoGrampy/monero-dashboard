@@ -89,18 +89,14 @@ export class MonerodService {
 
       console.log('Daemon connected', await this.daemon.isConnected())
 
-      if (await this.daemon.isConnected()) {
-        // Start polling monerod for data
-        this.pollDaemonGetInfo()
-        this.pollDaemonGetIsConnected()
-      }
-
+      this.pollDaemonGetInfo()
+      this.pollDaemonGetIsConnected()
     } catch (err) {
       console.log('start daemon error', err)
     }
   }
 
-  private async pollDaemonGetInfo() {
+  private pollDaemonGetInfo() {
     // Using rxjs here to allow for unsubscribing / canceling outstanding requests before stopping Daemon
     // TODO: replace TS any type
     // TODO: FIXME - research using promise with rxjs 'from'
@@ -110,8 +106,13 @@ export class MonerodService {
     // })
 
     this.getInfoInterval = setInterval(async () => {
-      const data = await this.daemon.getInfo()
-      this.monerodLatestDataSubject.next(data.state as MoneroDaemonState)
+      try {
+        const data = await this.daemon.getInfo()
+        this.monerodLatestDataSubject.next(data.state as MoneroDaemonState)
+      } catch (err) {
+        console.log(err)
+      }
+
     }, 10000)
   }
 
@@ -120,10 +121,13 @@ export class MonerodService {
      * Check if Daemon connected, update subject, if not connected (i.e. http error response), update subject with offline
      * OR perhaps use the error to push an empty or undefined object to the data stream rather than creating a new subject and let UI handle that
      */
-
     this.getIsConnectedInterval = setInterval(async () => {
-      const data = await this.daemon.isConnected()
-      console.log(data)
+      try {
+        const data = await this.daemon.isConnected()
+        console.log('is connected to daemon:', data)
+      } catch (err) {
+        console.log(err)
+      }
     }, 10000)
   }
 
@@ -150,7 +154,11 @@ export class MonerodService {
 
   public async update(path?: string) {
     // TODO: Does this actually work?
-    await this.daemon.downloadUpdate(path)
+    try {
+      await this.daemon.downloadUpdate(path)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   // Generates ElectronJS prompt to ask user to specify monerod file location
