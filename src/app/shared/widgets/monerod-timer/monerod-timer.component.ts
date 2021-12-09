@@ -10,13 +10,12 @@ interface TimerState {
 }
 
 @Component({
-  selector: 'app-timer',
-  templateUrl: './timer.component.html',
-  styleUrls: ['./timer.component.scss']
+  selector: 'app-monerod-timer',
+  templateUrl: './monerod-timer.component.html',
+  styleUrls: ['./monerod-timer.component.scss']
 })
-export class TimerComponent implements OnInit {
-
-  public widgetName = Widget.TIMER_STORE;
+export class MonerodTimerComponent implements OnInit {
+  public widgetName = Widget.MONEROD_TIMER;
   public timerState: TimerState = {
     on: null,
     off: null,
@@ -29,6 +28,7 @@ export class TimerComponent implements OnInit {
   ngOnInit(): void {
     console.log('HomeComponent INIT');
     this.widgetStore.getMyWidgetState(this.widgetName).subscribe((data: TimerState) => {
+      console.log('timer data subscription', data);
       this.timerState = data;
     });
   }

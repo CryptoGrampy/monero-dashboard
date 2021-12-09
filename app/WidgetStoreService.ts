@@ -6,6 +6,7 @@ export class WidgetStoreService {
   private readonly store = new ElectronStore<WidgetStateStore>()
 
   constructor() {
+    this.store.clear();
     this.store.set('widget-store.donation-store', 'oof')
   }
 

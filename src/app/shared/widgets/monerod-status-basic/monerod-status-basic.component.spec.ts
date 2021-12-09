@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimerComponent } from './timer.component';
+import { MonerodStatusBasicComponent } from './monerod-status-basic.component';
 
-describe('TimerComponent', () => {
-  let component: TimerComponent;
-  let fixture: ComponentFixture<TimerComponent>;
+describe('MonerodStatusBasicComponent', () => {
+  let component: MonerodStatusBasicComponent;
+  let fixture: ComponentFixture<MonerodStatusBasicComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TimerComponent ]
+      declarations: [ MonerodStatusBasicComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TimerComponent);
+    fixture = TestBed.createComponent(MonerodStatusBasicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

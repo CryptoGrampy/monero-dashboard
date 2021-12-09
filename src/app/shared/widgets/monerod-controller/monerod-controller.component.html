@@ -1,0 +1,12 @@
+<!-- TODO: Wrapper class providing widget styles/standardized widget function calls -->
+<div class="widget">
+  <h2>Monerod Controller</h2>
+  <p>
+    {{ state | json }}
+  </p>
+  
+  <p>
+    <button type="button" (click)="updateState()">Update Widget State</button>
+    <button type="button" (click)="toggleState()">ToggleState</button>
+  </p>
+</div>

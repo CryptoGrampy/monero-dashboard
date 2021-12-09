@@ -6,15 +6,19 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PageNotFoundComponent } from './components/';
 import { WebviewDirective } from './directives/';
 import { FormsModule } from '@angular/forms';
-import { TimerComponent } from './widgets';
+import { MonerodTimerComponent } from './widgets';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MonerodControllerComponent } from './widgets/monerod-controller/monerod-controller.component';
+import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/monerod-status-basic.component';
 
 @NgModule({
   declarations: [
     PageNotFoundComponent,
     WebviewDirective,
-    TimerComponent,
-    DashboardComponent
+    MonerodTimerComponent,
+    DashboardComponent,
+    MonerodControllerComponent,
+    MonerodStatusBasicComponent
   ],
   imports: [
     CommonModule,

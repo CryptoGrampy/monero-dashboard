@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Use these enums for storing/retrieving app state
 export enum Widget {
-  TIMER_STORE = 'timer-store',
-  DONATION_STORE = 'donation-store'
+  MONEROD_TIMER = 'monerod-timer',
+  MONEROD_CONTROLLER = 'monerod-controller',
+  DONATION = 'donation'
 }
 
 // Access keys for backend API's
