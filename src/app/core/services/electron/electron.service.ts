@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
-import { WidgetEnum } from '../widget-enum';
+import { NodeApiList, Widget } from '../../../enums/enum';
 
 enum IpcInvokeEnum {
   SAVE_DATA = 'save-data',
@@ -49,11 +49,11 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-  public loadData(storeKey: WidgetEnum) {
-    return this.ipcRenderer.invoke(IpcInvokeEnum.LOAD_DATA, storeKey);
+  public loadData(dataType: NodeApiList) {
+    return this.ipcRenderer.invoke(IpcInvokeEnum.LOAD_DATA, dataType);
   }
 
-  public saveData(storeKey: WidgetEnum, data: any) {
-    return this.ipcRenderer.invoke(IpcInvokeEnum.SAVE_DATA, storeKey, data);
+  public saveData(dataType: NodeApiList, data: any) {
+    return this.ipcRenderer.invoke(IpcInvokeEnum.SAVE_DATA, dataType, data);
   }
 }

@@ -152,12 +152,9 @@ export class MonerodService {
       clearInterval(this.getInfoInterval)
     }
 
-    try {
-      console.log('stopping daemon')
-      await this.daemon.stopProcess()
-    } catch (err) {
-      console.log('stop daemon error', err)
-    }
+    this.daemon.stopProcess().then((res) => {
+      console.log('stopped', res)
+    })
   }
 
   public async restartDaemon() {
@@ -195,4 +192,3 @@ export class MonerodService {
     return 100;
   }
 }
-

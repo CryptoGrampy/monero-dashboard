@@ -4,14 +4,13 @@ import * as fs from 'fs';
 import * as url from 'url';
 import { MonerodService } from './MonerodService'
 import { TrayService } from './TrayService';
-
-enum IpcInvokeEnum {
-  SAVE_DATA = 'save-data',
-  LOAD_DATA = 'load-data'
-}
+import { IpcInvokeEnum } from './enums';
+import { NodeApiList } from '../src/app/enums/enum';
+import { WidgetStoreService } from './WidgetStoreService';
 
 let win: BrowserWindow = null;
 let moneroService = new MonerodService()
+let widgetStateStoreService = new WidgetStoreService()
 
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
@@ -27,15 +26,39 @@ const bootstrap = async () => {
     await moneroService.startDaemon()
   }
 
-  ipcMain.handle(IpcInvokeEnum.SAVE_DATA, async (event, storeKey, data) => {
-    console.log(event)
-    console.log(storeKey)
-    console.log(data)
+  // Save Data
+  ipcMain.handle(IpcInvokeEnum.SAVE_DATA, async (event, storeKey: NodeApiList, data) => {
+    switch (storeKey) {
+      case NodeApiList.WIDGET_STORE:
+        console.log(data)
+        widgetStateStoreService.setWidgetStateStore(data)
+        break;
+
+      default:
+        break;
+    }
+    // console.log('save event',event)
+    console.log('save store key', storeKey)
+    console.log('save data', data)
   })
 
-  ipcMain.handle(IpcInvokeEnum.LOAD_DATA, async (event, storeKey) => {
-    console.log(event)
-    console.log(storeKey)
+  // Load Data
+  ipcMain.handle(IpcInvokeEnum.LOAD_DATA, async (event, storeKey: NodeApiList) => {
+    let returnData = null;
+    switch (storeKey) {
+      case NodeApiList.WIDGET_STORE:
+        console.log('load storeKey', storeKey)
+        returnData = widgetStateStoreService.getWidgetStateStore()
+        break;
+
+      case NodeApiList.MONEROD_STATUS:
+        console.log('Loading Monerod Data', storeKey)
+        break;
+
+      default:
+        break;
+    }
+    return returnData
   })
 }
 
