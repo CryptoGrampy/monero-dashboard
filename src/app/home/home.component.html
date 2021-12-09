@@ -3,7 +3,11 @@
     {{ 'PAGES.HOME.TITLE' | translate }}
   </h1>
 
-  {{ widgetState | json }}
+  <h2>Widget!</h2>
 
-  <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a>
+  {{ timerState | json }}
+
+  <button type="button" (click)="updateState()">Update Widget State</button>
+  <button type="button" (click)="toggleState()">ToggleState</button>
+  <!-- <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a> -->
 </div>

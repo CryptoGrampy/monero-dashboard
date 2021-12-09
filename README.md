@@ -1,8 +1,9 @@
 # monero dashboard
 
 ## TODOs
-- [ ] Create Front end rxjs data store
-- [ ] Create Back end data store for Dashboard state, widget state
+- [x] Create Front end rxjs data store
+- [ ] Create Back end data store for Dashboard state
+- [ ] Create Back end data store for Dashboard state
 - [ ] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
 - [ ] Get Monerod updater working
 - [ ] Add Drag and Drop library
@@ -21,6 +22,7 @@
   - Create Tor Hidden Service/Display Onion URL as text/QR code 
 - Mining
   - Mining controls similar to Feather Wallet
+  - P2Pool Share Status: https://p2pool.observer/api
 - Social
   - Current CCS list
   - Monero.Observer rss

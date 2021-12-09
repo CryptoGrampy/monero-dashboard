@@ -1,8 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Injectable } from '@angular/core';
-import { Observable, reduce } from 'rxjs';
-import { tap } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, pluck, tap, BehaviorSubject } from 'rxjs';
 import { ElectronService } from '../../core/services';
 import { NodeApiList, Widget } from '../../enums/enum';
 
@@ -29,8 +27,12 @@ export class WidgetStateStoreService {
     this.loadData();
   }
 
-  public updateMyWidgetState(state: WidgetState) {
-    this.electronService.saveData(NodeApiList.WIDGET_STORE, state).then(() => {
+  public updateMyWidgetState(state: unknown, widgetName: Widget) {
+    const storeState = {};
+    console.log('name', widgetName);
+    storeState[widgetName] = state;
+    console.log('storeState', storeState);
+    this.electronService.saveData(NodeApiList.WIDGET_STORE, storeState).then(() => {
       this.loadData();
     });
   }
@@ -38,22 +40,17 @@ export class WidgetStateStoreService {
   public getMyWidgetState(widgetName: Widget) {
     // TODO: Add distinctUntilChanged
     console.log('getting state');
-    console.log(this._dataStateSubject.getValue()['timer-store']);
-    // return this.dataState$
-    //   .pipe(
-    //     tap((val: WidgetStateStore) => console.log(val)),
-    //     reduce((acc, val) => {
-    //       console.log('val', val);
-    //     })
-    //   );
+    return this.dataState$
+      .pipe(
+        tap((val: WidgetStateStore) => console.log(val)),
+        pluck(widgetName)
+      );
   }
 
 
   private loadData() {
     this.electronService.loadData(NodeApiList.WIDGET_STORE).then((state: WidgetStateStore) => {
-      console.log('hey', state);
       if (state) {
-        console.log('state', state);
         this._dataStateSubject.next(state);
       }
     });

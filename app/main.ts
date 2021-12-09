@@ -30,16 +30,12 @@ const bootstrap = async () => {
   ipcMain.handle(IpcInvokeEnum.SAVE_DATA, async (event, storeKey: NodeApiList, data) => {
     switch (storeKey) {
       case NodeApiList.WIDGET_STORE:
-        console.log(data)
         widgetStateStoreService.setWidgetStateStore(data)
         break;
 
       default:
         break;
     }
-    // console.log('save event',event)
-    console.log('save store key', storeKey)
-    console.log('save data', data)
   })
 
   // Load Data
@@ -47,12 +43,10 @@ const bootstrap = async () => {
     let returnData = null;
     switch (storeKey) {
       case NodeApiList.WIDGET_STORE:
-        console.log('load storeKey', storeKey)
         returnData = widgetStateStoreService.getWidgetStateStore()
         break;
 
       case NodeApiList.MONEROD_STATUS:
-        console.log('Loading Monerod Data', storeKey)
         break;
 
       default:

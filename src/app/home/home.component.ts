@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Widget } from '../enums/enum';
-import { WidgetState, WidgetStateStoreService } from '../services/widget-state-store/widget-state-store.service';
+import { WidgetStateStoreService } from '../services/widget-state-store/widget-state-store.service';
+
+interface TimerState {
+  on?: string;
+  off?: string;
+  active?: boolean;
+}
 
 @Component({
   selector: 'app-home',
@@ -9,16 +15,29 @@ import { WidgetState, WidgetStateStoreService } from '../services/widget-state-s
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  public widgetUIState: WidgetState = { [Widget.TIMER_STORE]: { foo: 'bar '}};
+  public widgetName = Widget.TIMER_STORE;
+  public timerState: TimerState = {
+    on: null,
+    off: null,
+    active: false
+  };
 
-  constructor(private router: Router, private widgetStore: WidgetStateStoreService) { }
+  constructor(private router: Router, private widgetStore: WidgetStateStoreService) {
+  }
 
   ngOnInit(): void {
     console.log('HomeComponent INIT');
-    this.widgetStore.updateMyWidgetState(this.widgetUIState);
-    // this.widg
-    // this.widgetStore.getMyWidgetState(Widget.TIMER_STORE).subscribe(data => {
-    //   console.log('next widget state', data);
-    // });
+    this.widgetStore.getMyWidgetState(this.widgetName).subscribe((data: TimerState) => {
+      this.timerState = data;
+    });
+  }
+
+  updateState() {
+    this.widgetStore.updateMyWidgetState(this.timerState, this.widgetName);
+  }
+
+  toggleState() {
+    const current = this.timerState.active;
+    this.timerState.active = !current;
   }
 }
