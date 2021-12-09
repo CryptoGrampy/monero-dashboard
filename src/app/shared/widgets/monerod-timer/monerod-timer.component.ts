@@ -16,30 +16,35 @@ interface TimerState {
 })
 export class MonerodTimerComponent implements OnInit {
   public widgetName = Widget.MONEROD_TIMER;
-  public timerState: TimerState = {
+  public currentState: TimerState;
+
+  private defaultState: TimerState = {
     on: null,
     off: null,
     active: false
   };
 
+
   constructor(private router: Router, private widgetStore: WidgetStateStoreService) {
+    this.currentState = this.defaultState;
   }
 
   ngOnInit(): void {
     console.log('HomeComponent INIT');
     this.widgetStore.getMyWidgetState(this.widgetName).subscribe((data: TimerState) => {
       console.log('timer data subscription', data);
-      this.timerState = data;
+      this.currentState = data;
     });
   }
 
+  // TODO: Add ngOnDestroy and remove all subscriptions
+
   updateState() {
-    this.widgetStore.updateMyWidgetState(this.timerState, this.widgetName);
+    this.widgetStore.updateMyWidgetState(this.currentState, this.widgetName);
   }
 
   toggleState() {
-    const current = this.timerState.active;
-    this.timerState.active = !current;
+    const current = this.currentState.active;
+    this.currentState.active = !current;
   }
-
 }

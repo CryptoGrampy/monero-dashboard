@@ -15,20 +15,21 @@ interface MonerodState {
 })
 export class MonerodControllerComponent implements OnInit, OnDestroy {
   public widgetName = Widget.MONEROD_CONTROLLER;
-  // Default state
-  public state: MonerodState = {
+  public currentState: MonerodState;
+
+  private defaultState: MonerodState = {
     autostart: false
   };
-  // widgetState$: Subscription;
 
   constructor(private widgetStore: WidgetStateStoreService) {
+    this.currentState = this.defaultState;
   }
 
   ngOnInit(): void {
     console.log('MonerodController INIT');
     this.widgetStore.getMyWidgetState(this.widgetName).subscribe((state: MonerodState) => {
       console.log('controller state subscription', state);
-      // this.state = state;
+      this.currentState = state;
     });
   }
 
@@ -37,12 +38,12 @@ export class MonerodControllerComponent implements OnInit, OnDestroy {
   }
 
   updateState() {
-    this.widgetStore.updateMyWidgetState(this.state, this.widgetName);
+    this.widgetStore.updateMyWidgetState(this.currentState, this.widgetName);
   }
 
   toggleState() {
-    const current = this.state.autostart;
-    this.state.autostart = !current;
+    const current = this.currentState.autostart;
+    this.currentState.autostart = !current;
   }
 
 }
