@@ -1,13 +1,11 @@
 import ElectronStore from "electron-store";
-import { WidgetState, WidgetStateStore } from "../src/app/services/widget-state-store/widget-state-store.service";
+import { WidgetStateStore, WidgetState } from "./enums";
 
 
 export class WidgetStoreService {
   private readonly store = new ElectronStore<WidgetStateStore>()
 
   constructor() {
-    this.store.clear();
-    this.store.set('widget-store.donation-store', 'oof')
   }
 
   // Retrieves filepath from electron-store

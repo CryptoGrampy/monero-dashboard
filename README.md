@@ -3,7 +3,6 @@
 ## TODOs
 - [x] Create Front end rxjs data store
 - [ ] Create Back end data store for Dashboard state
-- [ ] Create Back end data store for Dashboard state
 - [ ] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
 - [ ] Get Monerod updater working
 - [ ] Add Drag and Drop library

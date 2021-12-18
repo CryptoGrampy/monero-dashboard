@@ -117,6 +117,9 @@ export class MonerodService {
     //     this.monerodLatestDataSubject.next(data.state as MoneroDaemonState)
     // })
 
+    // Partial Update State
+    // https://paircoders.com/2020/07/04/add-and-update-values-in-behaviorsubject-angular/
+
     this.getInfoInterval = setInterval(async () => {
       try {
         const data = await this.daemon.getInfo()
@@ -125,7 +128,7 @@ export class MonerodService {
         console.log(err)
       }
 
-    }, 10000)
+    }, 20000)
   }
 
   private pollDaemonGetIsConnected() {

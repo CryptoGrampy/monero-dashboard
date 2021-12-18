@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Widget } from '../../../enums/enum';
+import { Widget } from '../../../../../app/enums';
+import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
+import { TrayControllerService } from '../../../services/tray-controller/tray-controller.service';
 import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
 
 
@@ -13,7 +15,7 @@ interface MonerodState {
   templateUrl: './monerod-controller.component.html',
   styleUrls: ['./monerod-controller.component.scss']
 })
-export class MonerodControllerComponent implements OnInit, OnDestroy {
+export class MonerodControllerComponent implements OnInit {
   public widgetName = Widget.MONEROD_CONTROLLER;
   public currentState: MonerodState;
 
@@ -21,7 +23,10 @@ export class MonerodControllerComponent implements OnInit, OnDestroy {
     autostart: false
   };
 
-  constructor(private widgetStore: WidgetStateStoreService) {
+  constructor(
+    private readonly widgetStore: WidgetStateStoreService,
+    private readonly monerodService: MonerodControllerService,
+    private readonly trayService: TrayControllerService) {
     this.currentState = this.defaultState;
   }
 
@@ -29,12 +34,26 @@ export class MonerodControllerComponent implements OnInit, OnDestroy {
     console.log('MonerodController INIT');
     this.widgetStore.getMyWidgetState(this.widgetName).subscribe((state: MonerodState) => {
       console.log('controller state subscription', state);
-      this.currentState = state;
+      if (state) {
+        this.currentState = state;
+      }
     });
   }
 
-  ngOnDestroy(): void {
-    // this.widgetState$.unsubscribe();
+  startMonerod() {
+    this.monerodService.start();
+  }
+
+  stopMonerod() {
+    this.monerodService.stop();
+  }
+
+  autostartMonerod() {
+    this.trayService.autostart();
+  }
+
+  stopAutostartMonerod() {
+    this.trayService.stopAutostart();
   }
 
   updateState() {

@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
-import { NodeApiList, Widget } from '../../../enums/enum';
+import { fromEvent } from 'rxjs';
+import { NodeApiList, NodeStreamList } from '../../../../../app/enums';
 
 enum IpcInvokeEnum {
   SAVE_DATA = 'save-data',
@@ -56,4 +57,14 @@ export class ElectronService {
   public saveData(dataType: NodeApiList, data: any) {
     return this.ipcRenderer.invoke(IpcInvokeEnum.SAVE_DATA, dataType, data);
   }
+
+  // TODO: Think more about this pattern... generic request that returns observable :)
+  // https://stackoverflow.com/questions/59549823/create-rxjs-of-observable-from-electron-ipcmain-on-response
+  public getBackendDataStream(streamRequest: NodeStreamList) {
+    this.ipcRenderer.send(String(streamRequest));
+
+    console.log('stream request', streamRequest);
+    return fromEvent(this.ipcRenderer, String(streamRequest), (event, payload) => payload);
+  }
+
 }

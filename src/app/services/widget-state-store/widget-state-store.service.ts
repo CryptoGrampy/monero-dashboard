@@ -1,15 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import { Injectable } from '@angular/core';
 import { Observable, pluck, tap, BehaviorSubject } from 'rxjs';
-import { ElectronService } from '../../core/services';
-import { NodeApiList, Widget } from '../../enums/enum';
-
-export type WidgetState = {
-  [key in Widget]?: Record<string, unknown>;
-};
-
-// https://stackoverflow.com/questions/62082215/typescript-map-all-enum-values-as-key
-export type WidgetStateStore = Record<Widget, Record<string, unknown>>;
+import { NodeApiList, Widget, WidgetStateStore } from '../../../../app/enums';
+import { ElectronService } from '../../core/services/electron/electron.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +32,6 @@ export class WidgetStateStoreService {
 
   public getMyWidgetState(widgetName: Widget) {
     // TODO: Add distinctUntilChanged
-    console.log('getting state');
     return this.dataState$
       .pipe(
         tap((val: WidgetStateStore) => console.log(val)),

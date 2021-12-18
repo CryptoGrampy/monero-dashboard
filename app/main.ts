@@ -4,8 +4,7 @@ import * as fs from 'fs';
 import * as url from 'url';
 import { MonerodService } from './MonerodService'
 import { TrayService } from './TrayService';
-import { IpcInvokeEnum } from './enums';
-import { NodeApiList } from '../src/app/enums/enum';
+import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList  } from './enums';
 import { WidgetStoreService } from './WidgetStoreService';
 
 let win: BrowserWindow = null;
@@ -32,7 +31,22 @@ const bootstrap = async () => {
       case NodeApiList.WIDGET_STORE:
         widgetStateStoreService.setWidgetStateStore(data)
         break;
-
+        
+      case NodeApiList.TRAY_CONTROLLER:
+        if (data === TrayControllerCommands.AUTOSTART) {
+          trayManager.setAutostart(true);
+        } else if (data === TrayControllerCommands.STOP_AUTOSTART) {
+          trayManager.setAutostart(false);
+        }
+        break;
+      case NodeApiList.MONEROD_CONTROLLER:
+        console.log(data)
+        if (data === MonerodControllerCommands.START) {
+          await moneroService.startDaemon()
+        } else if (data === MonerodControllerCommands.STOP) {
+          await moneroService.stopDaemon()
+        }
+        break;
       default:
         break;
     }
@@ -55,6 +69,14 @@ const bootstrap = async () => {
     return returnData
   })
 }
+
+ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
+  console.log('status called', arg);
+  moneroService.monerodLatestData$.subscribe(data => {
+    console.log('new data', data)
+    event.reply(NodeStreamList.MONEROD_STATUS, data);
+  })
+})
 
 function createWindow(): BrowserWindow {
   bootstrap()

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Widget } from '../../../enums/enum';
+import { Widget } from '../../../../../app/enums';
 import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
 
 interface TimerState {
@@ -24,7 +24,6 @@ export class MonerodTimerComponent implements OnInit {
     active: false
   };
 
-
   constructor(private router: Router, private widgetStore: WidgetStateStoreService) {
     this.currentState = this.defaultState;
   }
@@ -33,7 +32,9 @@ export class MonerodTimerComponent implements OnInit {
     console.log('HomeComponent INIT');
     this.widgetStore.getMyWidgetState(this.widgetName).subscribe((data: TimerState) => {
       console.log('timer data subscription', data);
-      this.currentState = data;
+      if (data) {
+        this.currentState = data;
+      }
     });
   }
 

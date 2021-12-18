@@ -114,7 +114,7 @@ export class TrayService {
       { label: 'Start Node', type: 'normal', click: () => this.monerodInstance.startDaemon() },
       { label: 'Stop Node', type: 'normal', click: () => this.onStopDaemon()},
       // { label: 'Restart Node', type: 'normal' },
-      { id: 'autostart', label: 'Autostart on Boot', type: 'checkbox', checked: this.trayState.autostart, click: (ref: MenuItem) => this.setAutostart(ref)},
+      { id: 'autostart', label: 'Autostart on Boot', type: 'checkbox', checked: this.trayState.autostart, click: (ref: MenuItem) => this.setAutostart(ref.checked)},
       // { label: 'Sep3', type: 'separator' },
       // { label: 'Settings', type: 'normal' },
       { label: 'Sep4', type: 'separator' },
@@ -133,8 +133,8 @@ export class TrayService {
     return this.store.get('trayStore.autostart')
   }
 
-  private setAutostart(ref: MenuItem): void {
-    this.store.set('trayStore.autostart', ref.checked)
+  public setAutostart(val: boolean): void {
+    this.store.set('trayStore.autostart', val)
 
     this.updateTrayState({ autostart: this.getAutostart() })
     this.generateTray()
