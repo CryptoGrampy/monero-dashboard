@@ -2,9 +2,6 @@
 <div class="widget">
   <h2>Monerod Status</h2>
   <p>
-    {{ test }}
-
-    {{ subscription$ }}
-{{ testEmitter$ }}
+  {{ testEmitter$ | async | json }}
   </p>
 </div>

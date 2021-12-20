@@ -6,9 +6,11 @@ import { MonerodService } from './MonerodService'
 import { TrayService } from './TrayService';
 import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList  } from './enums';
 import { WidgetStoreService } from './WidgetStoreService';
+import { Subscription } from 'rxjs';
 
 let win: BrowserWindow = null;
 let moneroService = new MonerodService()
+let monerodLatestData$: Subscription;
 let widgetStateStoreService = new WidgetStoreService()
 
 const args = process.argv.slice(1),
@@ -31,7 +33,7 @@ const bootstrap = async () => {
       case NodeApiList.WIDGET_STORE:
         widgetStateStoreService.setWidgetStateStore(data)
         break;
-        
+
       case NodeApiList.TRAY_CONTROLLER:
         if (data === TrayControllerCommands.AUTOSTART) {
           trayManager.setAutostart(true);
@@ -70,9 +72,20 @@ const bootstrap = async () => {
   })
 }
 
+const streamCleanup = () => {
+  if (monerodLatestData$) {
+    monerodLatestData$.unsubscribe();
+  }
+}
+
+ipcMain.on('cleanup', () => {
+  streamCleanup();
+})
+
+
 ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
   console.log('status called', arg);
-  moneroService.monerodLatestData$.subscribe(data => {
+  monerodLatestData$ = moneroService.monerodLatestData$.subscribe(data => {
     console.log('new data', data)
     event.reply(NodeStreamList.MONEROD_STATUS, data);
   })
@@ -140,6 +153,7 @@ try {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
+    streamCleanup();
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs';
 import { Subscription } from 'rxjs';
@@ -13,20 +13,23 @@ import { MonerodControllerService } from '../../../services/monerod-controller/m
 })
 export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
   public subscription$: Subscription;
-  public test;
 
-  testEmitter$ = new BehaviorSubject<number>(0);
+  testEmitter$ = new BehaviorSubject<Partial<MoneroDaemonState>>({
+    adjustedTimestamp: 123
+  });
 
-  constructor(private readonly monerodService: MonerodControllerService, private changeRef: ChangeDetectorRef) {}
+  constructor(private readonly monerodService: MonerodControllerService, private ngZone: NgZone) {}
 
   ngOnInit(): void {
     this.subscription$ = this.monerodService.getMoneroStatus().subscribe(data => {
-      console.log('dat', data);
-      this.test = data.adjustedTimestamp;
-
-      console.log('test', this.test);
-      this.testEmitter$.next(data.adjustedTimestamp);
-      this.changeRef.markForCheck();
+      /**
+       * TODO: for some reason rxjs async observable is happening outside ngzone.
+       * the data is being subscribed to correctly, but the template is not updating with a regular
+       * this.dataHolder = incomingSubscriptionData, so had to do this hacky thing :)
+       */
+      this.ngZone.run(() => {
+        this.testEmitter$.next(data);
+      });
     });
   }
 

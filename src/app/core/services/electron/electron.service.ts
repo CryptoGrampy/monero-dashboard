@@ -44,6 +44,8 @@ export class ElectronService {
       // ipcRenderer.invoke can serve many common use cases.
       // https://www.electronjs.org/docs/latest/api/ipc-renderer#ipcrendererinvokechannel-args
     }
+
+    this.streamCleanup();
   }
 
   public get isElectron(): boolean {
@@ -60,11 +62,15 @@ export class ElectronService {
 
   // TODO: Think more about this pattern... generic request that returns observable :)
   // https://stackoverflow.com/questions/59549823/create-rxjs-of-observable-from-electron-ipcmain-on-response
-  public getBackendDataStream(streamRequest: NodeStreamList) {
-    this.ipcRenderer.send(String(streamRequest));
+  public async getBackendDataStream(streamRequest: NodeStreamList) {
+    await this.ipcRenderer.send(String(streamRequest));
 
     console.log('stream request', streamRequest);
     return fromEvent(this.ipcRenderer, String(streamRequest), (event, payload) => payload);
   }
 
+  // TODO: Add enum?
+  public streamCleanup() {
+    this.ipcRenderer.send('cleanup');
+  }
 }

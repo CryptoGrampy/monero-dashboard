@@ -17,7 +17,6 @@ export class MonerodControllerService {
   }
 
   getMoneroStatus(): Observable<MoneroDaemonState> {
-    console.log('getting status');
     return this.moneroStatus$.asObservable();
 }
 
@@ -33,9 +32,14 @@ export class MonerodControllerService {
     });
   }
 
+  // Create data subscription on init
   private initMonerodDataStream() {
-    this.electronService.getBackendDataStream(NodeStreamList.MONEROD_STATUS).subscribe(data => {
-      this.moneroStatus$.next(data);
+    this.electronService.getBackendDataStream(NodeStreamList.MONEROD_STATUS).then(stream => {
+      stream.subscribe(data => {
+        if (data) {
+          this.moneroStatus$.next(data);
+        }
+      });
     });
   }
 }

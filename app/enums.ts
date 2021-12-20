@@ -29,6 +29,7 @@ export enum TrayControllerCommands {
 }
 
 export enum NodeStreamList {
+  STREAM_CLEANUP = 'stream-cleanup',
   MONEROD_STATUS = 'monerod-status'
 }
 
