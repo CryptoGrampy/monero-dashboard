@@ -45,7 +45,7 @@ export class ElectronService {
       // https://www.electronjs.org/docs/latest/api/ipc-renderer#ipcrendererinvokechannel-args
     }
 
-    this.streamCleanup();
+    this.cleanup();
   }
 
   public get isElectron(): boolean {
@@ -61,6 +61,8 @@ export class ElectronService {
   }
 
   // TODO: Think more about this pattern... generic request that returns observable :)
+  // TODO: I believe the ipcRenderer return event is outside ngZone:
+  // https://stackoverflow.com/questions/67685191/using-angular-async-pipe-and-onpush-change-detection-from-3rd-party-libraries
   // https://stackoverflow.com/questions/59549823/create-rxjs-of-observable-from-electron-ipcmain-on-response
   public async getBackendDataStream(streamRequest: NodeStreamList) {
     await this.ipcRenderer.send(String(streamRequest));
@@ -70,7 +72,8 @@ export class ElectronService {
   }
 
   // TODO: Add enum?
-  public streamCleanup() {
+  // This needs to be run to prevent buildup of node subscriptions when user refreshes page :/
+  private cleanup() {
     this.ipcRenderer.send('cleanup');
   }
 }
