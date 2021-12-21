@@ -1,7 +1,20 @@
-<!-- TODO: Wrapper class providing widget styles/standardized widget function calls -->
 <div class="widget">
-  <h2>Monerod Status</h2>
-  <p>
-  {{ testEmitter$ | async | json }}
-  </p>
+  <!-- Removing this data attribute may prevent template from updating -->
+  <h2 attr.data-monerodstatus="{{testEmitter$ | async | json}}">Monerod Status</h2>
+  <div *ngIf="(!testEmitter$.value.isOffline)">
+      <p>Sync: {{ syncPercentage ? syncPercentage : 'Unknown ' }}%</p>
+      <p>Online?: {{ testEmitter$.value.isOffline ? 'No' : 'Yes'}} </p>
+      <p>System Storage used by Monerod Blockchain: {{ monerodStorageUsed }} GB</p>
+
+      <h3>Connections</h3>
+      <p>Peers: {{ testEmitter$.value.numOnlinePeers }}</p>
+      <p>Incoming: {{ testEmitter$.value.numIncomingConnections }}</p>
+      <p>Outgoing: {{ testEmitter$.value.numOutgoingConnections }}</p>
+      <p>RPC: {{ testEmitter$.value.numRpcConnections }}</p>
+  </div>
+  <div *ngIf="testEmitter$.value.isOffline">
+    Offline
+  </div>
+
 </div>
+

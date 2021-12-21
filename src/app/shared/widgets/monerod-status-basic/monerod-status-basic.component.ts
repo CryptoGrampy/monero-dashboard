@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { MoneroDaemonState } from '../../../../../app/MonerodService';
+import { calcBytesToGigabytes, calcMonerodSyncPercentage } from '../../../../../app/utils';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
 
 @Component({
@@ -12,9 +12,7 @@ import { MonerodControllerService } from '../../../services/monerod-controller/m
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
-  public subscription$: Subscription;
-
-  testEmitter$ = new BehaviorSubject<Partial<MoneroDaemonState>>({
+  public defaultState = {
     adjustedTimestamp: undefined,
     numAltBlocks: undefined,
     blockSizeLimit: undefined,
@@ -29,7 +27,7 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
     heightWithoutBootstrap: undefined,
     numIncomingConnections: undefined,
     networkType: undefined,
-    isOffline: undefined,
+    isOffline: true,
     numOutgoingConnections: undefined,
     numRpcConnections: undefined,
     startTimestamp: undefined,
@@ -45,7 +43,15 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
     numOnlinePeers: undefined,
     cumulativeDifficulty: undefined,
     difficulty: undefined
-  });
+  };
+
+  public subscription$: Subscription;
+
+  public testEmitter$ = new BehaviorSubject<Partial<MoneroDaemonState>>(this.defaultState);
+
+  public syncPercentage = null;
+  public storageRemaining = null;
+  public monerodStorageUsed = null;
 
   constructor(private readonly monerodService: MonerodControllerService, private ngZone: NgZone) {}
 
@@ -57,13 +63,24 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
        * this.dataHolder = incomingSubscriptionData, so had to do this hacky thing :)
        */
       this.ngZone.run(() => {
-        this.testEmitter$.next(data);
+        if (data.isOffline === false) {
+          this.testEmitter$.next(data);
+        }
       });
+    });
+
+    this.testEmitter$.subscribe(data => {
+      if (data.height && data.targetHeight) {
+        this.syncPercentage = calcMonerodSyncPercentage(data.height, data.targetHeight).toFixed(2);
+      }
+
+      if (data.databaseSize) {
+        this.monerodStorageUsed = calcBytesToGigabytes(data.databaseSize).toFixed(2);
+      };
     });
   }
 
   ngOnDestroy(): void {
     this.subscription$.unsubscribe();
   }
-
 }

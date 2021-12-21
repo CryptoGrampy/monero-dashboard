@@ -2,36 +2,36 @@ import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
-import { MonerodService } from './MonerodService'
+import { MonerodService } from './MonerodService';
 import { TrayService } from './TrayService';
 import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList  } from './enums';
 import { WidgetStoreService } from './WidgetStoreService';
 import { Subscription } from 'rxjs';
 
 let win: BrowserWindow = null;
-let moneroService = new MonerodService()
+const moneroService = new MonerodService();
 let monerodLatestData$: Subscription;
-let widgetStateStoreService = new WidgetStoreService()
+const widgetStateStoreService = new WidgetStoreService();
 
-const args = process.argv.slice(1),
-  serve = args.some(val => val === '--serve');
+const args = process.argv.slice(1);
+  const serve = args.some(val => val === '--serve');
 
 const bootstrap = async () => {
   if (moneroService.getMonerodFilepath() === undefined) {
-    moneroService.askMonerodFilePath()
+    moneroService.askMonerodFilePath();
   }
 
-  const trayManager = new TrayService(moneroService)
+  const trayManager = new TrayService(moneroService);
 
   if (trayManager.getAutostart() === true && moneroService.getMonerodFilepath() !== undefined) {
-    await moneroService.startDaemon()
+    await moneroService.startDaemon();
   }
 
   // Save Data
   ipcMain.handle(IpcInvokeEnum.SAVE_DATA, async (event, storeKey: NodeApiList, data) => {
     switch (storeKey) {
       case NodeApiList.WIDGET_STORE:
-        widgetStateStoreService.setWidgetStateStore(data)
+        widgetStateStoreService.setWidgetStateStore(data);
         break;
 
       case NodeApiList.TRAY_CONTROLLER:
@@ -42,24 +42,24 @@ const bootstrap = async () => {
         }
         break;
       case NodeApiList.MONEROD_CONTROLLER:
-        console.log(data)
+        console.log(data);
         if (data === MonerodControllerCommands.START) {
-          await moneroService.startDaemon()
+          await moneroService.startDaemon();
         } else if (data === MonerodControllerCommands.STOP) {
-          await moneroService.stopDaemon()
+          await moneroService.stopDaemon();
         }
         break;
       default:
         break;
     }
-  })
+  });
 
   // Load Data
   ipcMain.handle(IpcInvokeEnum.LOAD_DATA, async (event, storeKey: NodeApiList) => {
     let returnData = null;
     switch (storeKey) {
       case NodeApiList.WIDGET_STORE:
-        returnData = widgetStateStoreService.getWidgetStateStore()
+        returnData = widgetStateStoreService.getWidgetStateStore();
         break;
 
       case NodeApiList.MONEROD_STATUS:
@@ -68,31 +68,31 @@ const bootstrap = async () => {
       default:
         break;
     }
-    return returnData
-  })
-}
+    return returnData;
+  });
+};
 
 const streamCleanup = () => {
   if (monerodLatestData$) {
     monerodLatestData$.unsubscribe();
   }
-}
+};
 
 ipcMain.on('cleanup', () => {
   streamCleanup();
-})
+});
 
 
 ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
   console.log('status called', arg);
   monerodLatestData$ = moneroService.monerodLatestData$.subscribe(data => {
-    console.log('new data', data)
+    console.log('new data', data);
     event.reply(NodeStreamList.MONEROD_STATUS, data);
-  })
-})
+  });
+});
 
 function createWindow(): BrowserWindow {
-  bootstrap()
+  bootstrap();
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -109,7 +109,6 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,  // false if you want to run e2e test with Spectron
     },
   });
-
 
   if (serve) {
     win.webContents.openDevTools();
@@ -148,7 +147,8 @@ try {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
-  // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+  // Added 400 ms to fix the black background issue while using transparent window.
+  // More detais at https://github.com/electron/electron/issues/15947
   app.on('ready', () => setTimeout(createWindow, 400));
 
   // Quit when all windows are closed.
