@@ -63,9 +63,8 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
        * this.dataHolder = incomingSubscriptionData, so had to do this hacky thing :)
        */
       this.ngZone.run(() => {
-        if (data.isOffline === false) {
-          this.testEmitter$.next(data);
-        }
+        console.log('status', data);
+        this.testEmitter$.next(data);
       });
     });
 

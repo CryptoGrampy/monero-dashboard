@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { BehaviorSubject as Subject, Observable } from 'rxjs';
 import { NodeApiList, MonerodControllerCommands, NodeStreamList } from '../../../../app/enums';
 import { MoneroDaemonState } from '../../../../app/MonerodService';
@@ -10,13 +11,13 @@ import { ElectronService } from '../../core/services/electron/electron.service';
   providedIn: 'root'
 })
 export class MonerodControllerService {
-  private moneroStatus$: Subject<MoneroDaemonState> = new Subject({} as MoneroDaemonState);
+  private moneroStatus$: BehaviorSubject<Partial<MoneroDaemonState>> = new BehaviorSubject({isOffline: true});
 
   constructor(private readonly electronService: ElectronService) {
     this.initMonerodDataStream();
   }
 
-  getMoneroStatus(): Observable<MoneroDaemonState> {
+  getMoneroStatus(): Observable<Partial<MoneroDaemonState>> {
     return this.moneroStatus$.asObservable();
 }
 

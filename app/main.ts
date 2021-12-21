@@ -72,21 +72,18 @@ const bootstrap = async () => {
   });
 };
 
-const streamCleanup = () => {
+const cleanup = () => {
   if (monerodLatestData$) {
     monerodLatestData$.unsubscribe();
   }
 };
 
 ipcMain.on('cleanup', () => {
-  streamCleanup();
+  cleanup();
 });
 
-
 ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
-  console.log('status called', arg);
   monerodLatestData$ = moneroService.monerodLatestData$.subscribe(data => {
-    console.log('new data', data);
     event.reply(NodeStreamList.MONEROD_STATUS, data);
   });
 });
@@ -153,7 +150,7 @@ try {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
-    streamCleanup();
+    cleanup();
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {

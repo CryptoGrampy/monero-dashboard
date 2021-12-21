@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { dialog } from 'electron';
 const monerojs = require('monero-javascript');
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import ElectronStore from 'electron-store';
 
 // Return object from monero-javascript getInfo().state
@@ -45,7 +45,6 @@ enum MonerodStatus {
   STARTING = 'Monero Node: Starting Up... Please Hold',
   SYNCING = 'Monero Node: Syncing',
   STOPPING = 'Monero Node: Shutting Down',
-  STOPPED = 'Monero Node Stopped',
   OFFLINE = 'Monero Node: Offline',
   ERROR = 'Monero Node: Not Detected',
 }
@@ -64,8 +63,9 @@ interface MonerodStore {
 // TODO: Implement this as a singleton
 export class MonerodService {
   public daemon: any;
+  private readonly monerodStatusSubject: BehaviorSubject<MonerodStatus> = new BehaviorSubject(MonerodStatus.OFFLINE);
   private readonly store = new ElectronStore<MonerodStore>();
-  private readonly monerodLatestDataSubject: Subject<MoneroDaemonState> = new Subject();
+  private readonly monerodLatestDataSubject: BehaviorSubject<MoneroDaemonState> = new BehaviorSubject({isOffline: true} as MoneroDaemonState);
   // private getDaemonInfoRequest$?: Subscription
 
   private getInfoInterval?: NodeJS.Timer;
@@ -87,6 +87,11 @@ export class MonerodService {
     return this.monerodLatestDataSubject.asObservable();
   }
 
+  public get monerodStatus$(): Observable<MonerodStatus> {
+    return this.monerodStatusSubject.asObservable();
+  }
+
+
   public async startDaemon() {
     /**
      * TODO: Make this work if no connex available
@@ -96,17 +101,18 @@ export class MonerodService {
      * https://github.com/monero-ecosystem/monero-javascript/blob/fcc00324538975817d4524b9a337e95a9b68f441/src/test/TestMoneroDaemonRpc.js#L58
      */
     //
+    if (this.monerodStatusSubject.value === MonerodStatus.OFFLINE) {
+      this.monerodStatusSubject.next(MonerodStatus.OFFLINE);
 
-    try {
-      console.log('Starting Daemon');
-      this.daemon = await monerojs.connectToDaemonRpc(this.config);
+      try {
+        console.log('Starting Daemon');
+        this.daemon = await monerojs.connectToDaemonRpc(this.config);
 
-      console.log('Daemon connected', await this.daemon.isConnected());
-
-      this.pollDaemonGetInfo();
-      this.pollDaemonGetIsConnected();
-    } catch (err) {
-      console.log('start daemon error', err);
+        this.pollDaemonGetInfo();
+        this.pollDaemonGetIsConnected();
+      } catch (err) {
+        console.log('start daemon error', err);
+      }
     }
   }
 
@@ -114,6 +120,8 @@ export class MonerodService {
     // TODO: Move stop tasks to a cleanup method?
     // this.getDaemonInfoRequest$?.unsubscribe()
     // stop getConnectedPoll after disconnected
+
+    this.monerodStatusSubject.next(MonerodStatus.STOPPING);
 
     if (this.getInfoInterval) {
       clearInterval(this.getInfoInterval);
@@ -128,7 +136,7 @@ export class MonerodService {
     // TODO: Add Restart.  call stopDaemon, wait for stopped, call start Daemon
   }
 
-  public async update(path?: string) {
+  public async updateMonerod(path?: string) {
     // TODO: Does this actually work? :)
     try {
       await this.daemon.downloadUpdate(path);
@@ -182,8 +190,22 @@ export class MonerodService {
      */
     this.getIsConnectedInterval = setInterval(async () => {
       try {
-        const data = await this.daemon.isConnected();
-        console.log('is connected to daemon:', data);
+        const connected = await this.daemon.isConnected();
+
+        if (connected === true) {
+          this.monerodStatusSubject.next(MonerodStatus.ONLINE);
+        }
+
+        console.log('is connected to daemon:', connected);
+
+        // Disconnect after monerod is fully stopped
+        if (this.monerodStatusSubject.value === MonerodStatus.STOPPING) {
+          if (connected === false) {
+            this.monerodStatusSubject.next(MonerodStatus.OFFLINE);
+            this.monerodLatestDataSubject.next({...this.monerodLatestDataSubject.value, ...{ isOffline: true } });
+            clearInterval(this.getIsConnectedInterval);
+          }
+        }
       } catch (err) {
         console.log(err);
       }

@@ -63,7 +63,6 @@ export class TrayService {
   private readonly tray = new Tray(this.TRAY_ICON);
   private readonly trayDataSubject: Subject<TrayData> = new Subject();
   private readonly store = new ElectronStore<TrayStore>();
-  private lastTrayData?: TrayData;
 
   private trayState: TrayStateData = {
     ...isOfflineData, ...{autostart: this.getAutostart()}
@@ -107,10 +106,10 @@ export class TrayService {
   private updateStatus(trayData: TrayStateData): string {
     if (!trayData.isOffline && !trayData.isBusySyncing) {
       return StatusLabels.ONLINE;
-    } else if (trayData.isBusySyncing) {
-      return StatusLabels.SYNCING;
     } else if (trayData.isOffline) {
       return StatusLabels.OFFLINE;
+    } else if (trayData.isBusySyncing) {
+      return StatusLabels.SYNCING;
     } else {
       return StatusLabels.ERROR;
     }
