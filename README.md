@@ -2,8 +2,13 @@
 
 ## TODOs
 - [x] Create Front end rxjs data store
-- [ ] Create Back end data store for Dashboard state
+- [ ] Add UI component library
+- [ ] Simplify status widget
+- [ ] Add user config input to monerod w/default 'safe' config
+- [ ] Wrap widgets in 'cards'
+- [ ] 
 - [ ] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
+- [ ] Create Back end data store for Dashboard state
 - [ ] Get Monerod updater working
 - [ ] Add Drag and Drop library
 - [ ] Clean up back end code / Electron main.ts

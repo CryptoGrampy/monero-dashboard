@@ -15,7 +15,36 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
   public subscription$: Subscription;
 
   testEmitter$ = new BehaviorSubject<Partial<MoneroDaemonState>>({
-    adjustedTimestamp: 123
+    adjustedTimestamp: undefined,
+    numAltBlocks: undefined,
+    blockSizeLimit: undefined,
+    blockSizeMedian: undefined,
+    blockWeightLimit: undefined,
+    blockWeightMedian: undefined,
+    isBusySyncing: undefined,
+    databaseSize: undefined,
+    freeSpace: undefined,
+    numOfflinePeers: undefined,
+    height: undefined,
+    heightWithoutBootstrap: undefined,
+    numIncomingConnections: undefined,
+    networkType: undefined,
+    isOffline: undefined,
+    numOutgoingConnections: undefined,
+    numRpcConnections: undefined,
+    startTimestamp: undefined,
+    isSynchronized: undefined,
+    target: undefined,
+    targetHeight: undefined,
+    topBlockHash: undefined,
+    numTxs: undefined,
+    numTxsPool: undefined,
+    updateAvailable: undefined,
+    version: undefined,
+    wasBootstrapEverUsed: undefined,
+    numOnlinePeers: undefined,
+    cumulativeDifficulty: undefined,
+    difficulty: undefined
   });
 
   constructor(private readonly monerodService: MonerodControllerService, private ngZone: NgZone) {}
@@ -36,4 +65,5 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription$.unsubscribe();
   }
+
 }
