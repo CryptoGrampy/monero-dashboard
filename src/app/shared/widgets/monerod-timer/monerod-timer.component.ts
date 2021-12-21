@@ -34,6 +34,10 @@ export class MonerodTimerComponent implements OnInit, OnDestroy {
     active: false
   });
 
+  // TODO consider removing these and simplifying the vars tracking UI state
+  private startTimeArr = [];
+  private stopTimeArr = [];
+
   private storeSubscription$: Subscription;
   private timer: NodeJS.Timer;
 
@@ -43,6 +47,8 @@ export class MonerodTimerComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder) {}
 
   ngOnInit(): void {
+    // TODO move this startup logic to a start / stop method toggled by widget wrapper checkbox
+
     this.storeSubscription$ = this.widgetStore.getMyWidgetState(this.widgetName)
       .pipe(
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
@@ -51,6 +57,20 @@ export class MonerodTimerComponent implements OnInit, OnDestroy {
         if (data) {
           this.stateSubject.next(data);
           this.timerForm.patchValue(data);
+
+          if (data.startTime) {
+            this.startTimeArr = data.startTime.split(':');
+          }
+
+          if (data.stopTime) {
+            this.stopTimeArr = data.stopTime.split(':');
+          }
+
+          if (data.active === true) {
+            this.startTimer();
+          } else {
+            this.stopTimer();
+          }
         }
       });
 
@@ -65,29 +85,29 @@ export class MonerodTimerComponent implements OnInit, OnDestroy {
   }
 
   updateState() {
-    console.log('updating widget state');
     this.widgetStore.updateMyWidgetState(this.timerForm.value, this.widgetName);
   }
 
+  // When timer enabled, check every 58 seconds to see if current time matches start/stop times
   private startTimer(): void {
     this.timer = setInterval(() => {
-
-    }, 1000 * 50);
+      this.checkTime();
+    }, 1000 * 58);
   };
 
-  private checkTime(): void {
-    const currentTime = new Date();
+  private stopTimer(): void {
+    clearInterval(this.timer);
+  }
 
-//   const t = new Date()
-//  const s = t.getHours() + ':' + t.getMinutes()
-//  currentTime.now = s
-//  if (s === currentTimer.onTime) {
-//    console.log('Turning on Monerod')
-//    monerodSwitch(true)
-//  } else if (s === currentTimer.offTime) {
-//    console.log('Turning off Monerod')
-//    monerodSwitch(false)
-//  }
-// }, 55*1000)
-}
+  private checkTime(): void {
+    const currentDate = new Date(1980, 1, 1,  new Date().getHours(), new Date().getMinutes());
+    const startDate = new Date(1980, 1, 1, this.startTimeArr[0], this.startTimeArr[1]);
+    const stopDate = new Date(1980, 1, 1, this.stopTimeArr[0], this.stopTimeArr[1]);
+
+    if (currentDate.getTime() === startDate.getTime()) {
+      this.monerodControl.start();
+    } else if (currentDate.getTime() === stopDate.getTime()) {
+      this.monerodControl.stop();
+    }
+  }
 }

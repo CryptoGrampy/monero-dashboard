@@ -1,25 +1,25 @@
-<div class="widget">
+<div class="widget" [formGroup]="timerForm">
   <h2>Monerod Timer</h2>
+  <input type="checkbox" id="active" formControlName="active" />
+  <label for="active">Enable Timer</label>
+
   <div *ngIf="stateSubject.value.active">
     <h3>Your timer is currently Enabled:</h3>
     <p>Start time: {{ this.stateSubject.value.startTime }} </p>
     <p>Stop time: {{ this.stateSubject.value.stopTime }} </p>
   </div>
   <div *ngIf="!this.stateSubject.value.active">
-    <h3>Your timer is currently Disabled:</h3>
+    <h3>Your timer is currently Disabled</h3>
   </div>
 
-  <div [formGroup]="timerForm">
-    <h2>Timer Form</h2>
-
-    <label for="startTime">startTime: </label>
-    <input id="startTime" type="time" formControlName="startTime">
-
-    <label for="stopTime">stopTime: </label>
-    <input id="stopTime" type="time" formControlName="stopTime">
-    <input type="checkbox" id="active" formControlName="active" />
+    <h2>Timer Controls</h2>
     <label for="active">Enable Timer</label>
 
+    <label for="startTime">Start Time: </label>
+    <input id="startTime" type="time" formControlName="startTime">
+
+    <label for="stopTime">Stop Time: </label>
+    <input id="stopTime" type="time" formControlName="stopTime">
+
     <button type="button" (click)="this.timerForm.reset()">Clear Timer Values</button>
-  </div>
 </div>
