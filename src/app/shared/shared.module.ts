@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonerodControllerComponent } from './widgets/monerod-controller/monerod-controller.component';
 import {MatButtonModule} from '@angular/material/button';
 import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/monerod-status-basic.component';
+import { MonerochanSlideshowComponent } from './widgets/monerochan-slideshow/monerochan-slideshow.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/mone
     MonerodTimerComponent,
     DashboardComponent,
     MonerodControllerComponent,
-    MonerodStatusBasicComponent
+    MonerodStatusBasicComponent,
+    MonerochanSlideshowComponent
   ],
   imports: [
     CommonModule,

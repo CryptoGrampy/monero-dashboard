@@ -1,7 +1,7 @@
 {
   "PAGES": {
       "HOME": {
-          "TITLE": "App works !",
+          "TITLE": "Monero Dashboard",
           "GO_TO_DETAIL": "Go to Detail"
       },
       "DETAIL": {
