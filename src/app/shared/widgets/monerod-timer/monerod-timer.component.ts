@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
+import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
 import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
 
 interface TimerState {
-  on?: string;
-  off?: string;
+  startTime?: string;
+  stopTime?: string;
   active?: boolean;
 }
 
@@ -14,38 +18,76 @@ interface TimerState {
   templateUrl: './monerod-timer.component.html',
   styleUrls: ['./monerod-timer.component.scss']
 })
-export class MonerodTimerComponent implements OnInit {
+export class MonerodTimerComponent implements OnInit, OnDestroy {
   public widgetName = Widget.MONEROD_TIMER;
-  public currentState: TimerState;
 
-  private defaultState: TimerState = {
-    on: null,
-    off: null,
+  // Subscribe to form changes to update store
+  public timerForm = this.fb.group({
+    startTime: [''],
+    stopTime: [''],
+    active: [false]
+  });
+
+  public stateSubject = new BehaviorSubject<Partial<TimerState>>({
+    startTime: '',
+    stopTime: '',
     active: false
-  };
+  });
 
-  constructor(private router: Router, private widgetStore: WidgetStateStoreService) {
-    this.currentState = this.defaultState;
-  }
+  private storeSubscription$: Subscription;
+  private timer: NodeJS.Timer;
+
+  constructor(
+    private readonly monerodControl: MonerodControllerService,
+    private widgetStore: WidgetStateStoreService,
+    private readonly fb: FormBuilder) {}
 
   ngOnInit(): void {
-    console.log('HomeComponent INIT');
-    this.widgetStore.getMyWidgetState(this.widgetName).subscribe((data: TimerState) => {
-      console.log('timer data subscription', data);
-      if (data) {
-        this.currentState = data;
-      }
+    this.storeSubscription$ = this.widgetStore.getMyWidgetState(this.widgetName)
+      .pipe(
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      )
+      .subscribe((data: TimerState) => {
+        if (data) {
+          this.stateSubject.next(data);
+          this.timerForm.patchValue(data);
+        }
+      });
+
+    this.timerForm.valueChanges.subscribe(() => {
+      this.updateState();
     });
   }
 
-  // TODO: Add ngOnDestroy and remove all subscriptions
+  ngOnDestroy(): void {
+    this.storeSubscription$.unsubscribe();
+    this.stateSubject.unsubscribe();
+  }
 
   updateState() {
-    this.widgetStore.updateMyWidgetState(this.currentState, this.widgetName);
+    console.log('updating widget state');
+    this.widgetStore.updateMyWidgetState(this.timerForm.value, this.widgetName);
   }
 
-  toggleState() {
-    const current = this.currentState.active;
-    this.currentState.active = !current;
-  }
+  private startTimer(): void {
+    this.timer = setInterval(() => {
+
+    }, 1000 * 50);
+  };
+
+  private checkTime(): void {
+    const currentTime = new Date();
+
+//   const t = new Date()
+//  const s = t.getHours() + ':' + t.getMinutes()
+//  currentTime.now = s
+//  if (s === currentTimer.onTime) {
+//    console.log('Turning on Monerod')
+//    monerodSwitch(true)
+//  } else if (s === currentTimer.offTime) {
+//    console.log('Turning off Monerod')
+//    monerodSwitch(false)
+//  }
+// }, 55*1000)
+}
 }

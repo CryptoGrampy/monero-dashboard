@@ -1,11 +1,25 @@
 <div class="widget">
   <h2>Monerod Timer</h2>
-  <p>
-    {{ currentState | json }}
-  </p>
-  
-  <p>
-    <button type="button" (click)="updateState()">Update Widget State</button>
-    <button type="button" (click)="toggleState()">ToggleState</button>
-  </p>
+  <div *ngIf="stateSubject.value.active">
+    <h3>Your timer is currently Enabled:</h3>
+    <p>Start time: {{ this.stateSubject.value.startTime }} </p>
+    <p>Stop time: {{ this.stateSubject.value.stopTime }} </p>
+  </div>
+  <div *ngIf="!this.stateSubject.value.active">
+    <h3>Your timer is currently Disabled:</h3>
+  </div>
+
+  <div [formGroup]="timerForm">
+    <h2>Timer Form</h2>
+
+    <label for="startTime">startTime: </label>
+    <input id="startTime" type="time" formControlName="startTime">
+
+    <label for="stopTime">stopTime: </label>
+    <input id="stopTime" type="time" formControlName="stopTime">
+    <input type="checkbox" id="active" formControlName="active" />
+    <label for="active">Enable Timer</label>
+
+    <button type="button" (click)="this.timerForm.reset()">Clear Timer Values</button>
+  </div>
 </div>
