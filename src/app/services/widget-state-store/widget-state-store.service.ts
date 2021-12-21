@@ -31,7 +31,7 @@ export class WidgetStateStoreService {
   }
 
   public getMyWidgetState(widgetName: Widget) {
-    // TODO: Add distinctUntilChanged
+    // TODO: Add distinctUntilChanged ?
     return this.dataState$
       .pipe(
         tap((val: WidgetStateStore) => console.log(val)),

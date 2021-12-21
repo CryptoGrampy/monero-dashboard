@@ -19,7 +19,7 @@ export class MonerodControllerService {
 
   getMoneroStatus(): Observable<Partial<MoneroDaemonState>> {
     return this.moneroStatus$.asObservable();
-}
+  }
 
   start() {
     this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.START).then((data) => {
@@ -29,6 +29,12 @@ export class MonerodControllerService {
 
   stop() {
     this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.STOP).then((data) => {
+      console.log(data);
+    });
+  }
+
+  askMonerodFilepath() {
+    this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.ASK_MONEROD_CONFIG).then(data => {
       console.log(data);
     });
   }

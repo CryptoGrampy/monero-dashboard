@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { dialog } from 'electron';
 const monerojs = require('monero-javascript');
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import ElectronStore from 'electron-store';
 
 // Return object from monero-javascript getInfo().state
@@ -56,6 +56,7 @@ interface MonerodStore {
     filepath?: string;
     monerodFilepath?: boolean;
     monerodConfig?: string[];
+    monerodConfigFilepath?: string;
   };
 }
 
@@ -118,8 +119,8 @@ export class MonerodService {
 
   public async stopDaemon() {
     // TODO: Move stop tasks to a cleanup method?
-    // this.getDaemonInfoRequest$?.unsubscribe()
-    // stop getConnectedPoll after disconnected
+
+    if (this.monerodStatusSubject.value === MonerodStatus.ONLINE) {
 
     this.monerodStatusSubject.next(MonerodStatus.STOPPING);
 
@@ -130,6 +131,7 @@ export class MonerodService {
     this.daemon.stopProcess().then((res) => {
       console.log('stopped', res);
     });
+  }
   }
 
   public async restartDaemon() {
@@ -154,9 +156,23 @@ export class MonerodService {
     }
   }
 
-  // Retrieves filepath from electron-store
+  // Generates ElectronJS prompt to ask user to specify monerod config file location
+  public async askMonerodConfigFilePath() {
+    const filePath = await dialog.showOpenDialog({ properties: ['openFile'], message: 'Please find and select your Monerod Config file', title: 'Please find and select your Monerod Config file' });
+
+    if (!filePath.canceled) {
+      this.store.set('monerodStore.monerodConfigFilepath', String(filePath.filePaths[0]));
+    }
+  }
+
+  // Retrieves Monerod filepath from electron-store
   public getMonerodFilepath(): string {
     return this.store.get('monerodStore.monerodFilepath');
+  }
+
+  // Retrieves Monerod filepath from electron-store
+  public getMonerodConfigFilepath(): string {
+    return this.store.get('monerodStore.monerodConfigFilepath');
   }
 
   private pollDaemonGetInfo() {

@@ -18,9 +18,11 @@ export enum NodeApiList {
   TRAY_CONTROLLER = 'tray-controller'
 }
 
+
 export enum MonerodControllerCommands {
   START,
-  STOP
+  STOP,
+  ASK_MONEROD_CONFIG
 }
 
 export enum TrayControllerCommands {

@@ -5,10 +5,10 @@
 - [ ] Add UI component library
 - [ ] Simplify status widget
 - [ ] Add on/off/syncing/error tracking for monerod that updates monerod status
-- [ ] Add user config input to monerod w/default 'safe' config
+- [ ] Add user config input to monerod w/default 'safe' config (specify file?)
 - [ ] Wrap widgets in 'cards'/Wrapper class providing widget styles/standardized widget function calls
-- [ ] 
-- [ ] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
+- [ ] Remove boilerplate cruft
+- [x] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
 - [ ] Create Back end data store for Dashboard state
 - [ ] Get Monerod updater working
 - [ ] Add Drag and Drop library

@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { FormBuilder } from '@angular/forms';
+import { stat } from 'fs';
+import { distinctUntilChanged, Subscription } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
 import { TrayControllerService } from '../../../services/tray-controller/tray-controller.service';
@@ -19,24 +21,45 @@ export class MonerodControllerComponent implements OnInit {
   public widgetName = Widget.MONEROD_CONTROLLER;
   public currentState: MonerodState;
 
+  // Subscribe to form changes to update store
+  public monerodForm = this.fb.group({
+    autostart: [false],
+    customConfig: [false]
+  });
+
+
   private defaultState: MonerodState = {
     autostart: false
   };
 
+  // TODO: There is a bug when autostart is checked and when the app is started for the first time
   constructor(
     private readonly widgetStore: WidgetStateStoreService,
     private readonly monerodService: MonerodControllerService,
+    private readonly fb: FormBuilder,
     private readonly trayService: TrayControllerService) {
     this.currentState = this.defaultState;
   }
 
   ngOnInit(): void {
-    console.log('MonerodController INIT');
-    this.widgetStore.getMyWidgetState(this.widgetName).subscribe((state: MonerodState) => {
-      console.log('controller state subscription', state);
+    this.widgetStore.getMyWidgetState(this.widgetName)
+    .pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    )
+    .subscribe((state: MonerodState) => {
       if (state) {
-        this.currentState = state;
+        this.monerodForm.patchValue(state);
+
+        if (state.autostart === true) {
+          this.trayService.autostart();
+        } else {
+          this.trayService.stopAutostart();
+        }
       }
+    });
+
+    this.monerodForm.valueChanges.subscribe(() => {
+      this.widgetStore.updateMyWidgetState(this.monerodForm.value, this.widgetName);
     });
   }
 
@@ -48,21 +71,9 @@ export class MonerodControllerComponent implements OnInit {
     this.monerodService.stop();
   }
 
-  autostartMonerod() {
-    this.trayService.autostart();
+  onSetCustomMonerodFilepath(event) {
+    if (event.target.checked) {
+      this.monerodService.askMonerodFilepath();
+    }
   }
-
-  stopAutostartMonerod() {
-    this.trayService.stopAutostart();
-  }
-
-  updateState() {
-    this.widgetStore.updateMyWidgetState(this.currentState, this.widgetName);
-  }
-
-  toggleState() {
-    const current = this.currentState.autostart;
-    this.currentState.autostart = !current;
-  }
-
 }
