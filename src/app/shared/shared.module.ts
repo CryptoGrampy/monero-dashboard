@@ -8,7 +8,10 @@ import { WebviewDirective } from './directives/';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonerodTimerComponent } from './widgets';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonerodControllerComponent } from './widgets/monerod-controller/monerod-controller.component';
+import {MatButtonModule} from '@angular/material/button';
 import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/monerod-status-basic.component';
 
 @NgModule({
@@ -24,7 +27,10 @@ import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/mone
     CommonModule,
     TranslateModule,
     FormsModule,
-    ReactiveFormsModule
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    BrowserAnimationsModule,
   ],
   exports: [
     TranslateModule,
