@@ -4,6 +4,7 @@
 - [x] Create Front end rxjs data store
 - [ ] Add UI component library
 - [ ] Simplify status widget
+- [ ] Add on/off/syncing/error tracking for monerod that updates monerod status
 - [ ] Add user config input to monerod w/default 'safe' config
 - [ ] Wrap widgets in 'cards'
 - [ ] 
