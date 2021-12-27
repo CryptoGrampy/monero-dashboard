@@ -10,14 +10,16 @@
           [layout]="layout"
 >
     <ktd-grid-item *ngFor="let item of layout; trackBy:trackById" [id]="item.id">
-      <button type="button" (click)="remove(item.id)">Remove</button>
+      <div class="widget">
+
+      <button type="button" (click)="remove(item.id)">X</button>
 
       <!-- TODO: Add generic widget that renders widget component from service based on id? -->
       <div *ngIf="item.id === 'app-monerochan-slideshow'">
         <app-monerochan-slideshow></app-monerochan-slideshow>
       </div>
 
-      <div *ngIf="item.id === 'app-monerod-status-basic'">
+      <div  *ngIf="item.id === 'app-monerod-status-basic'">
         <app-monerod-status-basic></app-monerod-status-basic>
       </div>
 
@@ -28,6 +30,7 @@
       <div *ngIf="item.id === 'app-monerod-controller'">
         <app-monerod-controller></app-monerod-controller>
       </div>
+    </div>
 
     </ktd-grid-item>
 </ktd-grid>

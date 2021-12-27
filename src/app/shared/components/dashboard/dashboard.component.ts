@@ -56,8 +56,8 @@ export class DashboardComponent implements OnInit {
         id: nextId,
         x: 0,
         y: 0,
-        w: 2,
-        h: 2
+        w: 4,
+        h: 4
     };
 
     // Important: Don't mutate the array, create new instance. This way notifies the Grid component that the layout has changed.
@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
    * @param array source array to be returned without the element to remove
    * @param condition function that will return true for the item that we want to remove
    */
-  ktdArrayRemoveItem<T>(array: T[], condition: (item: T) => boolean) {
+  private ktdArrayRemoveItem<T>(array: T[], condition: (item: T) => boolean) {
     const arrayCopy = [...array];
     const index = array.findIndex((item) => condition(item));
     if (index > -1) {
