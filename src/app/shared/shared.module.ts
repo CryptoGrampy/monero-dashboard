@@ -14,6 +14,7 @@ import { MonerodControllerComponent } from './widgets/monerod-controller/monerod
 import {MatButtonModule} from '@angular/material/button';
 import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/monerod-status-basic.component';
 import { MonerochanSlideshowComponent } from './widgets/monerochan-slideshow/monerochan-slideshow.component';
+import { KtdGridModule } from '@katoid/angular-grid-layout';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MonerochanSlideshowComponent } from './widgets/monerochan-slideshow/mon
   imports: [
     CommonModule,
     TranslateModule,
+    KtdGridModule,
     FormsModule,
     MatSlideToggleModule,
     ReactiveFormsModule,

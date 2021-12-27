@@ -1,6 +1,34 @@
-<div class="widget-wrapper">
-  <app-monerod-controller></app-monerod-controller>
-  <app-monerod-status-basic></app-monerod-status-basic>
-  <app-monerod-timer></app-monerod-timer>
-  <app-monerochan-slideshow></app-monerochan-slideshow>
-</div>
+<label for="widget-select">Add a widget:</label>
+<select name="widget-select" id="widget-select" [(ngModel)]="selectVal">
+    <option value="">--Please choose an option--</option>
+    <option *ngFor="let widget of widgets" value="{{widget}}">{{widget}}</option>
+</select>
+<button type="button" (click)="add()">Add</button>
+
+<ktd-grid [cols]="cols"
+          [rowHeight]="rowHeight"
+          [layout]="layout"
+>
+    <ktd-grid-item *ngFor="let item of layout; trackBy:trackById" [id]="item.id">
+      <button type="button" (click)="remove(item.id)">Remove</button>
+
+      <!-- TODO: Add generic widget that renders widget component from service based on id? -->
+      <div *ngIf="item.id === 'app-monerochan-slideshow'">
+        <app-monerochan-slideshow></app-monerochan-slideshow>
+      </div>
+
+      <div *ngIf="item.id === 'app-monerod-status-basic'">
+        <app-monerod-status-basic></app-monerod-status-basic>
+      </div>
+
+      <div *ngIf="item.id === 'app-monerod-timer'">
+        <app-monerod-timer></app-monerod-timer>
+      </div>
+
+      <div *ngIf="item.id === 'app-monerod-controller'">
+        <app-monerod-controller></app-monerod-controller>
+      </div>
+
+    </ktd-grid-item>
+</ktd-grid>
+
