@@ -7,7 +7,6 @@ import { MonerodControllerService } from '../../../services/monerod-controller/m
 import { TrayControllerService } from '../../../services/tray-controller/tray-controller.service';
 import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
 
-
 interface MonerodState {
   autostart?: boolean;
 }

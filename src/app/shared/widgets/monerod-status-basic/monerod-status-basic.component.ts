@@ -9,7 +9,6 @@ import { MonerodControllerService } from '../../../services/monerod-controller/m
   selector: 'app-monerod-status-basic',
   templateUrl: './monerod-status-basic.component.html',
   styleUrls: ['./monerod-status-basic.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
   public defaultState = {
