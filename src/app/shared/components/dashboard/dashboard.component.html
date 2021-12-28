@@ -1,11 +1,9 @@
 <label for="widget-select">Add a widget:</label>
 <select name="widget-select" id="widget-select" [(ngModel)]="selectVal">
-    <option value="">--Please choose an option--</option>
+    <option value="">--Please select an option--</option>
     <option *ngFor="let widget of widgets" value="{{widget}}">{{widget}}</option>
 </select>
 <button type="button" (click)="add()">Add</button>
-
-<button type="button">Lock/Unlock Dashboard</button>
 
 <ktd-grid [cols]="cols"
           [rowHeight]="rowHeight"

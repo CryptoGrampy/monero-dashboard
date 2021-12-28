@@ -72,7 +72,7 @@ export class ElectronService {
   }
 
   // TODO: Add enum?
-  // This needs to be run to prevent buildup of node subscriptions when user refreshes page :/
+  // This needs to be run to prevent buildup of node-side subscriptions when user refreshes page :/
   private cleanup() {
     this.ipcRenderer.send('cleanup');
   }
