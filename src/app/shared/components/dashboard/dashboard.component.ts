@@ -33,8 +33,7 @@ export class DashboardComponent implements OnInit {
   }
 
   add() {
-    console.log('adding widget');
-    console.log(this.selectVal);
+    console.log('adding widget', this.selectVal);
      /** Adds a grid item to the layout */
     const nextId = this.selectVal;
 
