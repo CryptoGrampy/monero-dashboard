@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // TODO: put these into one place
 export enum IpcInvokeEnum {
   SAVE_DATA = 'save-data',
@@ -7,7 +8,8 @@ export enum IpcInvokeEnum {
 export enum Widget {
   MONEROD_TIMER = 'monerod-timer',
   MONEROD_CONTROLLER = 'monerod-controller',
-  DONATION = 'donation'
+  DONATION = 'donation',
+  DASHBOARD = 'dashboard'
 }
 
 // Access keys for backend API's

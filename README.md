@@ -1,5 +1,18 @@
 # monero dashboard
 
+## Who
+
+This dashboard is geared toward (in priority order) users who:
+
+1. want to push the boundaries
+2. want to have fun
+3. are newbs who may not have experience / enjoyment in running apps from CLI
+
+For the time being this app is *not* geared toward those:
+1. with high security/opsec requirements
+2. who may not have a lot of system resources
+3. who are passionate about performance (this app might run like dogshit for the forseeable future)
+
 ## TODOs
 - [x] Create Front end rxjs data store
 - [ ] Add UI component library

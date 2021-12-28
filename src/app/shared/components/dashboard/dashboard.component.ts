@@ -1,12 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { KtdGridLayout, KtdGridLayoutItem, ktdTrackById } from '@katoid/angular-grid-layout';
+import { Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
+import { Widget } from '../../../../../app/enums';
+import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
+
+interface DashboardState {
+  activeLayout?: KtdGridLayout;
+};
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   widgets = [
     'app-monerochan-slideshow',
@@ -20,16 +28,39 @@ export class DashboardComponent implements OnInit {
   cols = 6;
   rowHeight = 50;
   layout: KtdGridLayout = [
-    { id: 'app-monerochan-slideshow', x: 3, y: 3, w: 4, h: 10 },
-    { id: 'app-monerod-status-basic', x: 3, y: 0, w: 3, h: 3 },
-    { id: 'app-monerod-timer', x: 0, y: 3, w: 3, h: 3 },
-    { id: 'app-monerod-controller', x: 3, y: 3, w: 3, h: 3 },
+    { id: 'app-monerod-controller', x: 0, y: 0, w: 3, h: 3 },
   ];
   trackById = ktdTrackById;
 
-  constructor() { }
+  private widgetName = Widget.DASHBOARD;
+
+  private subscription$: Subscription;
+
+  private readonly dashboardState$: BehaviorSubject<DashboardState> = new BehaviorSubject({});
+
+  constructor(private readonly widgetStore: WidgetStateStoreService) { }
+
 
   ngOnInit(): void {
+    this.subscription$ = this.widgetStore.getMyWidgetState(this.widgetName)
+    .pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    )
+    .subscribe((state: DashboardState) => {
+      if (state) {
+       this.dashboardState$.next(state);
+       console.log('updated dashboard', this.dashboardState$.value);
+       this.layout = state.activeLayout;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+      this.subscription$.unsubscribe();
+  }
+
+  getDashboardState$(): Observable<DashboardState> {
+    return this.dashboardState$.asObservable();
   }
 
   add() {
@@ -51,11 +82,12 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+    // TODO: Use a widget registry service for pulling widget id's and pre-defined 'default' sizes
     const newLayoutItem: KtdGridLayoutItem = {
         id: nextId,
         x: 0,
         y: 0,
-        w: 4,
+        w: 2,
         h: 4
     };
 
@@ -65,12 +97,23 @@ export class DashboardComponent implements OnInit {
         ...this.layout
     ];
 
+    this.dashboardState$.next({activeLayout: this.layout});
+    this.widgetStore.updateMyWidgetState(this.dashboardState$.value, this.widgetName);
   }
 
   remove(id: string) {
     // Important: Don't mutate the array. Let Angular know that the layout has changed creating a new reference.
     this.layout = this.ktdArrayRemoveItem(this.layout, (item) => item.id === id);
+    this.dashboardState$.next({activeLayout: this.layout});
+    this.widgetStore.updateMyWidgetState(this.dashboardState$.value, this.widgetName);
   }
+
+  onLayoutUpdated(layout: KtdGridLayout) {
+    console.log('on layout updated', layout);
+    this.layout = layout;
+    this.dashboardState$.next({activeLayout: this.layout});
+    this.widgetStore.updateMyWidgetState(this.dashboardState$.value, this.widgetName);
+}
 
   /**
    * Removes and item from an array. Returns a new array instance (it doesn't mutate the source array).

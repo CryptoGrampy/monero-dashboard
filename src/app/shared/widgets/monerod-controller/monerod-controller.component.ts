@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { stat } from 'fs';
-import { distinctUntilChanged, Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
 import { TrayControllerService } from '../../../services/tray-controller/tray-controller.service';
