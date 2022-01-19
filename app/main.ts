@@ -47,8 +47,9 @@ const bootstrap = async () => {
           await moneroService.startDaemon();
         } else if (data === MonerodControllerCommands.STOP) {
           await moneroService.stopDaemon();
+        } else if (data === MonerodControllerCommands.UPDATE) {
+          await moneroService.updateDaemon();
         } else if (data === MonerodControllerCommands.ASK_MONEROD_CONFIG) {
-          console.log('hey');
           await moneroService.askMonerodConfigFilePath();
         }
         break;

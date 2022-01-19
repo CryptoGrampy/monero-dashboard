@@ -2,9 +2,8 @@
 <div class="widget" [formGroup]="monerodForm">
   <h2>Monerod Controller</h2>
   <p>
-    <button type="button" (click)="startMonerod()">Start Monerod</button>
-    <button type="button" (click)="stopMonerod()">Stop Monerod</button>
-
+    <button type="button" (click)="start()">Start Monerod</button>
+    <button type="button" (click)="stop()">Stop Monerod</button>
     <input type="checkbox" id="autostart" formControlName="autostart" />
     <label for="autostart">Autostart</label>
 

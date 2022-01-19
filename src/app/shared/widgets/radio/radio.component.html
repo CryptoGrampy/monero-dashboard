@@ -1,0 +1,22 @@
+<div class="widget" [formGroup]="radioForm">
+  <h2>
+    Radio
+  </h2>
+
+  <label for="station-select">Select a Radio Station: </label>
+  <select name="station-select" id="station-select" formControlName="selectedStation">
+    <option value="">--Please select an option--</option>
+    <option *ngFor="let station of radioStations;" value="{{station.name}}">{{station.displayName}}</option>
+  </select>
+  <div *ngIf="currentSelection">
+
+<p>
+  <audio src="{{currentSelection.streamSrc}}" type="audio/ogg" autostart="0" autostart="false" preload="none" controls="">
+  </audio>
+</p>
+    <p>
+      <a target="_blank" href={{currentSelection.url}}>{{currentSelection.displayName}}</a>
+    </p>
+  </div>
+</div>
+

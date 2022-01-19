@@ -9,6 +9,7 @@ import { MonerodControllerService } from '../../../services/monerod-controller/m
   selector: 'app-monerod-status-basic',
   templateUrl: './monerod-status-basic.component.html',
   styleUrls: ['./monerod-status-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
   public defaultState = {
@@ -52,13 +53,15 @@ export class MonerodStatusBasicComponent implements OnInit, OnDestroy {
   public storageRemaining = null;
   public monerodStorageUsed = null;
 
-  constructor(private readonly monerodService: MonerodControllerService, private ngZone: NgZone) {}
+  constructor(
+    private readonly monerodService: MonerodControllerService,
+    private ngZone: NgZone) {}
 
   ngOnInit(): void {
     this.subscription$ = this.monerodService.getMoneroStatus().subscribe(data => {
       /**
        * TODO: for some reason rxjs async observable is happening outside ngzone.
-       * the data is being subscribed to correctly, but the template is not updating with a regular
+       * the data is being subscribed to corexpressionrectly, but the template is not updating with a regular
        * this.dataHolder = incomingSubscriptionData, so had to do this hacky thing :)
        */
       this.ngZone.run(() => {

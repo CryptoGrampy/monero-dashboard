@@ -77,10 +77,19 @@ export class MonerodService {
   private readonly config = [
     this.getMonerodFilepath(),
     '--no-igd',
+    '--no-zmq',
+    '--p2p-bind-port', '18080',
+    '--p2p-bind-ip', '0.0.0.0',
     '--rpc-bind-port', '18089',
-    '--rpc-bind-ip', '0.0.0.0',
+    '--rpc-bind-ip', '127.0.0.1',
+    '--disable-dns-checkpoints',
     '--confirm-external-bind',
+    '--enable-dns-blocklist',
     '--prune-blockchain',
+    '--out-peers', '32',
+    '--in-peers', '100',
+    '--limit-rate-up', '1048576',
+    '--limit-rate-down', '1048576',
     '--db-sync-mode', 'safe:sync'
   ];
 
@@ -119,7 +128,6 @@ export class MonerodService {
 
   public async stopDaemon() {
     // TODO: Move stop tasks to a cleanup method?
-
     if (this.monerodStatusSubject.value === MonerodStatus.ONLINE) {
 
     this.monerodStatusSubject.next(MonerodStatus.STOPPING);
@@ -134,14 +142,13 @@ export class MonerodService {
   }
   }
 
-  public async restartDaemon() {
-    // TODO: Add Restart.  call stopDaemon, wait for stopped, call start Daemon
-  }
+  // TODO: Add Restart.  call stopDaemon, wait for stopped, call start Daemon
+  public async restartDaemon() {}
 
-  public async updateMonerod(path?: string) {
-    // TODO: Does this actually work? :)
+  // TODO: Does this actually work?
+  public async updateDaemon() {
     try {
-      await this.daemon.downloadUpdate(path);
+      await this.daemon.downloadUpdate();
     } catch (err) {
       console.log(err);
     }
@@ -211,8 +218,6 @@ export class MonerodService {
         if (connected === true) {
           this.monerodStatusSubject.next(MonerodStatus.ONLINE);
         }
-
-        console.log('is connected to daemon:', connected);
 
         // Disconnect after monerod is fully stopped
         if (this.monerodStatusSubject.value === MonerodStatus.STOPPING) {

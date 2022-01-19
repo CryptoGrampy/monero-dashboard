@@ -20,7 +20,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     'app-monerochan-slideshow',
     'app-monerod-status-basic',
     'app-monerod-timer',
-    'app-monerod-controller'
+    'app-monerod-controller',
+    'app-radio',
+    'app-updater'
   ];
 
   selectVal = '';

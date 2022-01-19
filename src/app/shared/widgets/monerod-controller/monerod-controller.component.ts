@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
@@ -15,7 +16,7 @@ interface MonerodState {
   templateUrl: './monerod-controller.component.html',
   styleUrls: ['./monerod-controller.component.scss']
 })
-export class MonerodControllerComponent implements OnInit {
+export class MonerodControllerComponent implements OnInit, OnDestroy {
   public widgetName = Widget.MONEROD_CONTROLLER;
   public currentState: MonerodState;
 
@@ -25,6 +26,7 @@ export class MonerodControllerComponent implements OnInit {
     customConfig: [false]
   });
 
+  private widgetStoreSubscription: Subscription;
 
   private defaultState: MonerodState = {
     autostart: false
@@ -40,7 +42,7 @@ export class MonerodControllerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.widgetStore.getMyWidgetState(this.widgetName)
+    this.widgetStoreSubscription = this.widgetStore.getMyWidgetState(this.widgetName)
     .pipe(
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
     )
@@ -61,11 +63,15 @@ export class MonerodControllerComponent implements OnInit {
     });
   }
 
-  startMonerod() {
+  ngOnDestroy(): void {
+    this.widgetStoreSubscription.unsubscribe();
+  }
+
+  start() {
     this.monerodService.start();
   }
 
-  stopMonerod() {
+  stop() {
     this.monerodService.stop();
   }
 

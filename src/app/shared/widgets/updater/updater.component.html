@@ -1,0 +1,23 @@
+<div class="widget">
+  <h2>Monerod Updater</h2>
+
+  <div *ngIf="updateAvailable && isOnline">
+    <p>
+      Your version: {{ version }}
+    </p>
+   <p>⚠️⚠️⚠️ Your Monerod is out of date! ⚠️⚠️⚠️</p>
+  <a target="_blank" href="https://www.getmonero.org/downloads/#cli">
+      Download the latest version
+    </a>
+    <!-- <button type="button" (click)="update()">Update Monerod</button> -->
+  </div>
+  <div *ngIf="!updateAvailable && isOnline">
+    <p>
+      Your version: {{ version }}
+    </p>
+    <p>You're up to Date</p>
+  </div>
+  <div *ngIf="!isOnline">
+    Node Offline
+  </div>
+</div>

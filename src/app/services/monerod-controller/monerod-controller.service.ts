@@ -23,14 +23,20 @@ export class MonerodControllerService {
 
   start() {
     this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.START).then((data) => {
-      console.log(data);
+      console.log('Monerod Controller Start Data', data);
     });
   }
 
   stop() {
     this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.STOP).then((data) => {
-      console.log(data);
+      console.log('Monerod Controller Stop Data', data);
     });
+  }
+
+  update() {
+    this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.UPDATE).then((data => {
+      console.log('Monerod Controller Update Data', data);
+    }));
   }
 
   askMonerodFilepath() {

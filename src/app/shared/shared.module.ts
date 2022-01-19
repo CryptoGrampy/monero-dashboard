@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PageNotFoundComponent } from './components/';
 import { WebviewDirective } from './directives/';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MonerodTimerComponent } from './widgets';
+import { MonerodTimerComponent, RadioComponent } from './widgets';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,6 +15,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/monerod-status-basic.component';
 import { MonerochanSlideshowComponent } from './widgets/monerochan-slideshow/monerochan-slideshow.component';
 import { KtdGridModule } from '@katoid/angular-grid-layout';
+import { UpdaterComponent } from './widgets/updater/updater.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,9 @@ import { KtdGridModule } from '@katoid/angular-grid-layout';
     DashboardComponent,
     MonerodControllerComponent,
     MonerodStatusBasicComponent,
-    MonerochanSlideshowComponent
+    MonerochanSlideshowComponent,
+    RadioComponent,
+    UpdaterComponent
   ],
   imports: [
     CommonModule,

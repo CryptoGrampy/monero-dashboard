@@ -9,6 +9,7 @@ export enum Widget {
   MONEROD_TIMER = 'monerod-timer',
   MONEROD_CONTROLLER = 'monerod-controller',
   DONATION = 'donation',
+  RADIO = 'radio',
   DASHBOARD = 'dashboard'
 }
 
@@ -24,6 +25,7 @@ export enum NodeApiList {
 export enum MonerodControllerCommands {
   START,
   STOP,
+  UPDATE,
   ASK_MONEROD_CONFIG
 }
 
