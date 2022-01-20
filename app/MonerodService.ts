@@ -74,6 +74,7 @@ export class MonerodService {
 
   // TODO: Monerod startup stuff - config should be user editable and get saved to store
   // TODO: Consider RPC-only connections to remote Monerod
+  // TODO: Use best possible default config for granny
   private readonly config = [
     this.getMonerodFilepath(),
     '--no-igd',

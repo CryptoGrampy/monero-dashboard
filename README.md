@@ -1,4 +1,6 @@
-# monero dashboard
+# Monero Dashboard
+
+This is first and foremost, a proof of concept / art project. It's meant to be an extremely crufty catch-all for things that may not make sense to put into say, Monero GUI. Does a carousel of dancing Monerochans belong in the GUI?  Probably not, but it does belong in the Monero Dashboard as a widget, with a link to the Monero Art Fund.  
 
 ## Who
 
@@ -29,8 +31,6 @@ To run a build on your platform / generate an executable:
 ```bash
 npm run electron:build
 ```
-
-
 
 ## TODOs
 - [ ] Add user config input to monerod w/default 'safe' config (specify file?)
