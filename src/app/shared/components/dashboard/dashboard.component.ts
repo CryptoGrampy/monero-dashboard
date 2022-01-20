@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { KtdGridLayout, KtdGridLayoutItem, ktdTrackById } from '@katoid/angular-grid-layout';
 import { Subscription } from 'rxjs';
-import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
 
@@ -45,9 +45,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription$ = this.widgetStore.getMyWidgetState(this.widgetName)
-    .pipe(
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-    )
     .subscribe((state: DashboardState) => {
       if (state) {
        this.dashboardState$.next(state);

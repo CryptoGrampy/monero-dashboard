@@ -1,13 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { WidgetStateStoreService } from '../../../services/widget-state-store/widget-state-store.service';
-
-interface RadioState {
-  selectedStation: string;
-}
 
 interface RadioStation {
   displayName: string;
@@ -53,10 +48,6 @@ export class RadioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.widgetStoreSubscription = this.widgetStore.getMyWidgetState(this.widgetName)
-    .pipe(
-      // TODO Remove these distinctuntilchanged calls in all component
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-    )
     .subscribe((state) => {
       if (state) {
         this.radioForm.patchValue(state);

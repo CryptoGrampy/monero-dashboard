@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO: put these into one place
+// TODO: put these into a better place
 export enum IpcInvokeEnum {
   SAVE_DATA = 'save-data',
   LOAD_DATA = 'load-data'

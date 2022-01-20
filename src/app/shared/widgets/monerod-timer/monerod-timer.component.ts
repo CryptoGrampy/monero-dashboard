@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
-import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
@@ -50,9 +49,6 @@ export class MonerodTimerComponent implements OnInit, OnDestroy {
     // TODO move this startup logic to a start / stop method toggled by widget wrapper checkbox
 
     this.storeSubscription$ = this.widgetStore.getMyWidgetState(this.widgetName)
-      .pipe(
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-      )
       .subscribe((data: TimerState) => {
         if (data) {
           this.stateSubject.next(data);

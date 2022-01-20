@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Injectable } from '@angular/core';
-import { Observable, pluck, tap, BehaviorSubject } from 'rxjs';
+import { Observable, pluck, tap, BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { NodeApiList, Widget, WidgetStateStore } from '../../../../app/enums';
 import { ElectronService } from '../../core/services/electron/electron.service';
 
@@ -17,7 +17,7 @@ export class WidgetStateStoreService {
 
   constructor(private electronService: ElectronService) {
     this.dataState$ = this._dataStateSubject.asObservable();
-    this.loadData();
+    this.loadWidgetStore();
   }
 
   public updateMyWidgetState(state: unknown, widgetName: Widget) {
@@ -26,28 +26,26 @@ export class WidgetStateStoreService {
     storeState[widgetName] = state;
     console.log('storeState', storeState);
     this.electronService.saveData(NodeApiList.WIDGET_STORE, storeState).then(() => {
-      this.loadData();
+      this.loadWidgetStore();
     });
   }
 
   public getMyWidgetState(widgetName: Widget) {
-    // TODO: Add distinctUntilChanged ?
     return this.dataState$
       .pipe(
-        tap((val: WidgetStateStore) => console.log(val)),
-        pluck(widgetName)
+        tap((val: WidgetStateStore) => console.log('getting widget state', val)),
+        pluck(widgetName),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
       );
   }
 
-
-  private loadData() {
+  private loadWidgetStore() {
     this.electronService.loadData(NodeApiList.WIDGET_STORE).then((state: WidgetStateStore) => {
       if (state) {
         this._dataStateSubject.next(state);
       }
     });
   }
-
 }
 
 

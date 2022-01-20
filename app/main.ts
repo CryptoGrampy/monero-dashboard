@@ -85,6 +85,7 @@ ipcMain.on('cleanup', () => {
   cleanup();
 });
 
+// Monerod status data stream return to front end
 ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
   monerodLatestData$ = moneroService.monerodLatestData$.subscribe(data => {
     event.reply(NodeStreamList.MONEROD_STATUS, data);

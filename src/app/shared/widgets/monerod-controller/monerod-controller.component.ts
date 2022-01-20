@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs';
 import { Widget } from '../../../../../app/enums';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
 import { TrayControllerService } from '../../../services/tray-controller/tray-controller.service';
@@ -43,9 +42,6 @@ export class MonerodControllerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.widgetStoreSubscription = this.widgetStore.getMyWidgetState(this.widgetName)
-    .pipe(
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-    )
     .subscribe((state: MonerodState) => {
       if (state) {
         this.monerodForm.patchValue(state);

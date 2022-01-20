@@ -60,7 +60,6 @@ export class ElectronService {
     return this.ipcRenderer.invoke(IpcInvokeEnum.SAVE_DATA, dataType, data);
   }
 
-  // TODO: Think more about this pattern... generic request that returns observable :)
   // TODO: I believe the ipcRenderer return event is outside ngZone:
   // https://stackoverflow.com/questions/67685191/using-angular-async-pipe-and-onpush-change-detection-from-3rd-party-libraries
   // https://stackoverflow.com/questions/59549823/create-rxjs-of-observable-from-electron-ipcmain-on-response
@@ -71,7 +70,7 @@ export class ElectronService {
     return fromEvent(this.ipcRenderer, String(streamRequest), (event, payload) => payload);
   }
 
-  // TODO: Add enum?
+  // TODO: Add cleanup as enum
   // This needs to be run to prevent buildup of node-side subscriptions when user refreshes page :/
   private cleanup() {
     this.ipcRenderer.send('cleanup');
