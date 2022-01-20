@@ -80,7 +80,7 @@ export class MonerodService {
     '--no-zmq',
     '--p2p-bind-port', '18080',
     '--p2p-bind-ip', '0.0.0.0',
-    '--rpc-bind-port', '18089',
+    '--rpc-bind-port', '18081',
     '--rpc-bind-ip', '127.0.0.1',
     '--disable-dns-checkpoints',
     '--confirm-external-bind',

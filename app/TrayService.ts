@@ -120,7 +120,7 @@ export class TrayService {
       { id: 'status', label: this.updateStatus(this.trayState), type: 'normal', enabled: false },
       { id: 'sync', label: `Sync: ${this.trayState.syncPercentage && !this.trayState.isOffline ? this.trayState.syncPercentage : 'Unknown Sync '}%`, type: 'normal', enabled: false },
       // { id: 'freeSpace', label: `Free Storage Remaining: 0%`, type: 'normal', enabled: false },
-      { id: 'connections', label: `Connections: Out: ${this.trayState.numOutgoingConnections} P2P: ${this.trayState.numIncomingConnections} RPC: ${this.trayState.numRpcConnections}`, type: 'normal', enabled: false },
+      { id: 'connections', label: !this.trayState.isOffline ? `Connections: Out: ${this.trayState.numOutgoingConnections} P2P: ${this.trayState.numIncomingConnections} RPC: ${this.trayState.numRpcConnections}`: '', type: 'normal', enabled: false },
       // { label: 'Sep1', type: 'separator' },
       // { label: 'Dashboard', type: 'normal' },
       { label: 'Sep2', type: 'separator' },

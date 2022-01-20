@@ -56,6 +56,7 @@
     "@angular/router": "13.1.1",
     "@katoid/angular-grid-layout": "0.2.0",
     "monero-javascript": "0.5.9",
+    "rss-parser": "3.12.0",
     "rxjs": "7.4.0",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4"

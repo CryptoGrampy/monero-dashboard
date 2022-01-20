@@ -24,7 +24,7 @@ const bootstrap = async () => {
   const trayManager = new TrayService(moneroService);
 
   if (trayManager.getAutostart() === true && moneroService.getMonerodFilepath() !== undefined) {
-    await moneroService.startDaemon();
+    moneroService.startDaemon();
   }
 
   // Save Data
