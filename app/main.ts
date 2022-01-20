@@ -42,7 +42,6 @@ const bootstrap = async () => {
         }
         break;
       case NodeApiList.MONEROD_CONTROLLER:
-        console.log(data);
         if (data === MonerodControllerCommands.START) {
           await moneroService.startDaemon();
         } else if (data === MonerodControllerCommands.STOP) {
