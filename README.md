@@ -13,6 +13,25 @@ For the time being this app is *not* geared toward those:
 2. who may not have a lot of system resources
 3. who are passionate about performance (this app might run like dogshit for the forseeable future)
 
+## Install
+
+```bash
+git clone git@github.com:CryptoGrampy/monero-dashboard.git
+cd monero-dashboard
+npm i
+npm run start
+```
+
+## Build
+
+To run a build on your platform / generate an executable:
+
+```bash
+npm run electron:build
+```
+
+
+
 ## TODOs
 - [ ] Add user config input to monerod w/default 'safe' config (specify file?)
 - [ ] Wrap widgets in 'cards'/Wrapper class providing widget styles/standardized widget function calls
@@ -22,9 +41,12 @@ For the time being this app is *not* geared toward those:
 - [ ] Clean up back end code / Electron main.ts... very messy
 - [ ] Add Typescript/ESlint/Prettier rules and clean up disabled rules
 - [ ] Improve back end Monerod state manager
+- [ ] Configure Github releases
+- [ ] Tests?
 
 ## Where to go from here
-- Codebase is extremely messy and needs a lot of refactoring- especially for state-store and electron ipc handlers.  It's currently cobbled together with duct tape.
+- Monerod Custom Configs
+- Codebase is extremely messy and needs a lot of refactoring- especially for state-store and electron ipc handlers.  It's currently cobbled together with duct tape.  Also needs linting
 - Replace widget select with a horizontal scrollbar with widget icons/add buttons on each one, or ideally drag and drop onto dashboard
 - Include monerod/xmrig/p2pool binaries?
 - P2Pool mining capability
