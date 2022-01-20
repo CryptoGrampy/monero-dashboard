@@ -2,19 +2,44 @@
   <!-- Removing this data attribute may prevent template from updating -->
   <h2 attr.data-monerodstatus="{{testEmitter$ | async | json}}">Monerod Status</h2>
   <div *ngIf="(!testEmitter$.value.isOffline)">
-      <p>Sync: {{ syncPercentage ? syncPercentage : 'Unknown ' }}%</p>
-      <p>Online?: {{ testEmitter$.value.isOffline ? 'No' : 'Yes'}} </p>
-      <p>System Storage used by Monerod Blockchain: {{ monerodStorageUsed }} GB</p>
+    <div class="sync-info">
+      <span *ngIf="syncPercentage === 100">
+        Synchronized
+      </span>
+      <span *ngIf="syncPercentage !== 100">
+        Synchronizing
+      </span>
+      <span>
+        Sync: {{ syncPercentage ? syncPercentage : 'Unknown ' }}%
+      </span>
+    </div>
 
-      <h3>Connections</h3>
-      <p>Peers: {{ testEmitter$.value.numOnlinePeers }}</p>
-      <p>Incoming: {{ testEmitter$.value.numIncomingConnections }}</p>
-      <p>Outgoing: {{ testEmitter$.value.numOutgoingConnections }}</p>
-      <p>RPC: {{ testEmitter$.value.numRpcConnections }}</p>
+    <p>
+      <mat-progress-bar color="primary" [value]="syncPercentage">
+      </mat-progress-bar>
+    </p>
+    <br>
+    <h3>Connections</h3>
+    <div class="values-wrapper">
+      <div>
+        <p class="value-title">Peers</p>
+        <p>{{ testEmitter$.value.numOnlinePeers }}</p>
+      </div>
+      <div>
+        <p class="value-title">Incoming</p>
+        <p> {{ testEmitter$.value.numIncomingConnections }}</p>
+      </div>
+      <div>
+        <p class="value-title">Outgoing</p>
+        <p> {{ testEmitter$.value.numOutgoingConnections }}</p>
+      </div>
+      <div>
+        <p class="value-title">RPC</p>
+        <p>{{ testEmitter$.value.numRpcConnections }}</p>
+      </div>
+    </div>
   </div>
   <div *ngIf="testEmitter$.value.isOffline">
-    Offline
+    🔴 Node Offline
   </div>
-
 </div>
-

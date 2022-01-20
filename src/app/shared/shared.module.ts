@@ -16,6 +16,7 @@ import { MonerodStatusBasicComponent } from './widgets/monerod-status-basic/mone
 import { MonerochanSlideshowComponent } from './widgets/monerochan-slideshow/monerochan-slideshow.component';
 import { KtdGridModule } from '@katoid/angular-grid-layout';
 import { UpdaterComponent } from './widgets/updater/updater.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { UpdaterComponent } from './widgets/updater/updater.component';
     MatSlideToggleModule,
     ReactiveFormsModule,
     MatButtonModule,
+    MatProgressBarModule,
     BrowserAnimationsModule,
   ],
   exports: [
