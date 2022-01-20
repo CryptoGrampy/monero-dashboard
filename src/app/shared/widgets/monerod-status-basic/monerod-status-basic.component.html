@@ -1,5 +1,6 @@
 <div class="widget">
   <!-- Removing this data attribute may prevent template from updating -->
+  <!-- TODO Fix -->
   <h2 attr.data-monerodstatus="{{testEmitter$ | async | json}}">Monerod Status</h2>
   <div *ngIf="(!testEmitter$.value.isOffline)">
     <div class="sync-info">

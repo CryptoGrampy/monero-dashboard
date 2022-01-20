@@ -6,7 +6,7 @@ This dashboard is geared toward (in priority order) users who:
 
 1. want to push the boundaries
 2. want to have fun
-3. are newbs who may not have experience / enjoyment in running apps from CLI
+3. are newbs who may not have experience / enjoyment /capability in running apps from the CLI
 
 For the time being this app is *not* geared toward those:
 1. with high security/opsec requirements
@@ -14,21 +14,20 @@ For the time being this app is *not* geared toward those:
 3. who are passionate about performance (this app might run like dogshit for the forseeable future)
 
 ## TODOs
-- [x] Create Front end rxjs data store
-- [ ] Add UI component library
-- [ ] Simplify status widget
-- [ ] Add on/off/syncing/error tracking for monerod that updates monerod status
 - [ ] Add user config input to monerod w/default 'safe' config (specify file?)
 - [ ] Wrap widgets in 'cards'/Wrapper class providing widget styles/standardized widget function calls
 - [ ] Remove boilerplate cruft
-- [x] Create widget-like example for Monero Node and Timer (for other Monero Bounty)
-- [ ] Create Back end data store for Dashboard state
-- [ ] Get Monerod updater working
-- [ ] Add Drag and Drop library
-- [ ] Clean up back end code / Electron main.ts
-- [ ] Add Typescript/ESlint rules
+- [ ] Refactor/Rebuild Data Store
+- [ ] Can Monerod Updater work from app using hardcoded paths?
+- [ ] Clean up back end code / Electron main.ts... very messy
+- [ ] Add Typescript/ESlint/Prettier rules and clean up disabled rules
 - [ ] Improve back end Monerod state manager
-- [ ] Create Widget template and interface to implement
+
+## Where to go from here
+- Codebase is extremely messy and needs a lot of refactoring- especially for state-store and electron ipc handlers.  It's currently cobbled together with duct tape.
+- Replace widget select with a horizontal scrollbar with widget icons/add buttons on each one, or ideally drag and drop onto dashboard
+- Include monerod/xmrig/p2pool binaries?
+- P2Pool mining capability
 
 ## Widget ideas
 
@@ -48,14 +47,16 @@ For the time being this app is *not* geared toward those:
   - Chat?
   - XMR.radio player
 - Donation
+- Data Charts
 
 ## Architecture thoughts
 
 - Widgets
-  - should implement onAddToDashboard, onRemoveFromDashboard, widget-name, display name, height/width reqs, usesExternalApiCall (display as icon) 
+  - different types- stateful vs non-stateful widget
+  - should have a static representation that includes title/image or icon/tags that can be used for cataloguing purposes and in select menu
+  - should implement onAddToDashboard, onRemoveFromDashboard, widget-name, display name, minimum height/width reqs, usesExternalApiCall (display as icon) 
   - should not talk to each other/depend on one another
-  - should consider when to pull their own data vs adding a new subscribable data service
-  - should not have push conflicting state changes (i.e. a pushes a config different from the monero node widget)
+  - should consider when to pull their own data vs adding a new shared subscribable data service
+  - should not push conflicting state changes (i.e. a pushes a config different from the monero node widget)
   - could be categorized via a sidebar router
-  - timer example- should set start and stop time, and retrieve that time from electron store on start
  
