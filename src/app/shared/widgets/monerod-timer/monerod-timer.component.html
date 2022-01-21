@@ -9,10 +9,6 @@
     <p>Start time: {{ this.stateSubject.value.startTime }} </p>
     <p>Stop time: {{ this.stateSubject.value.stopTime }} </p>
   </div>
-  <div *ngIf="!this.stateSubject.value.active">
-    <h3>Your timer is currently Disabled</h3>
-  </div>
-
     <h2>Timer Controls</h2>
     <label for="active">Enable Timer</label>
 

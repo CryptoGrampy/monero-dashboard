@@ -17,6 +17,7 @@ import { MonerochanSlideshowComponent } from './widgets/monerochan-slideshow/mon
 import { KtdGridModule } from '@katoid/angular-grid-layout';
 import { UpdaterComponent } from './widgets/updater/updater.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { DonationComponent } from './widgets/donation/donation.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MonerodStatusBasicComponent,
     MonerochanSlideshowComponent,
     RadioComponent,
-    UpdaterComponent
+    UpdaterComponent,
+    DonationComponent
   ],
   imports: [
     CommonModule,

@@ -9,6 +9,8 @@ import * as fs from 'fs';
 import { fromEvent } from 'rxjs';
 import { NodeApiList, NodeStreamList } from '../../../../../app/enums';
 
+// TODO Review async/awaits in this file
+
 enum IpcInvokeEnum {
   SAVE_DATA = 'save-data',
   LOAD_DATA = 'load-data'
