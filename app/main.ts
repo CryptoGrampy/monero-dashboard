@@ -3,10 +3,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
 import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList  } from './enums';
-import { WidgetStoreService } from './WidgetStoreService';
 import { Subscription } from 'rxjs';
 import { MonerodManager } from './monerod-manager';
 import { TrayManager } from './tray-manager';
+import { WidgetStoreService } from './widget-store-service';
 
 let win: BrowserWindow = null;
 const moneroManager = new MonerodManager();
