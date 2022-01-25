@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BehaviorSubject as Subject, Observable } from 'rxjs';
 import { NodeApiList, MonerodControllerCommands, NodeStreamList } from '../../../../app/enums';
-import { MoneroDaemonState } from '../../../../app/MonerodService';
+import { MoneroDaemonState } from '../../../../app/monerod-manager';
 import { ElectronService } from '../../core/services/electron/electron.service';
 
 @Injectable({

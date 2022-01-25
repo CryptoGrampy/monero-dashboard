@@ -62,7 +62,7 @@ interface MonerodStore {
 
 // TODO: Add linter/organize/review public private methods in class
 // TODO: Implement this as a singleton
-export class MonerodService {
+export class MonerodManager {
   public daemon: any;
   private readonly monerodStatusSubject: BehaviorSubject<MonerodStatus> = new BehaviorSubject(MonerodStatus.OFFLINE);
   private readonly store = new ElectronStore<MonerodStore>();

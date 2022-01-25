@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Subscription } from 'rxjs';
-import { MoneroDaemonState } from '../../../../../app/MonerodService';
+import { MoneroDaemonState } from '../../../../../app/monerod-manager';
 import { calcBytesToGigabytes, calcMonerodSyncPercentage } from '../../../../../app/utils';
 import { MonerodControllerService } from '../../../services/monerod-controller/monerod-controller.service';
 

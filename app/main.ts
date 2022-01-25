@@ -2,14 +2,14 @@ import { app, BrowserWindow, ipcMain, nativeImage, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
-import { MonerodService } from './MonerodService';
-import { TrayService } from './TrayService';
 import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList  } from './enums';
 import { WidgetStoreService } from './WidgetStoreService';
 import { Subscription } from 'rxjs';
+import { MonerodManager } from './monerod-manager';
+import { TrayManager } from './tray-manager';
 
 let win: BrowserWindow = null;
-const moneroService = new MonerodService();
+const moneroManager = new MonerodManager();
 let monerodLatestData$: Subscription;
 const widgetStateStoreService = new WidgetStoreService();
 
@@ -17,14 +17,14 @@ const args = process.argv.slice(1);
   const serve = args.some(val => val === '--serve');
 
 const bootstrap = async () => {
-  if (moneroService.getMonerodFilepath() === undefined) {
-    moneroService.askMonerodFilePath();
+  if (moneroManager.getMonerodFilepath() === undefined) {
+    moneroManager.askMonerodFilePath();
   }
 
-  const trayManager = new TrayService(moneroService);
+  const trayManager = new TrayManager(moneroManager);
 
-  if (trayManager.getAutostart() === true && moneroService.getMonerodFilepath() !== undefined) {
-    moneroService.startDaemon();
+  if (trayManager.getAutostart() === true && moneroManager.getMonerodFilepath() !== undefined) {
+    moneroManager.startDaemon();
   }
 
   // Save Data
@@ -43,13 +43,13 @@ const bootstrap = async () => {
         break;
       case NodeApiList.MONEROD_CONTROLLER:
         if (data === MonerodControllerCommands.START) {
-          await moneroService.startDaemon();
+          await moneroManager.startDaemon();
         } else if (data === MonerodControllerCommands.STOP) {
-          await moneroService.stopDaemon();
+          await moneroManager.stopDaemon();
         } else if (data === MonerodControllerCommands.UPDATE) {
-          await moneroService.updateDaemon();
+          await moneroManager.updateDaemon();
         } else if (data === MonerodControllerCommands.ASK_MONEROD_CONFIG) {
-          await moneroService.askMonerodConfigFilePath();
+          await moneroManager.askMonerodConfigFilePath();
         }
         break;
       default:
@@ -87,7 +87,7 @@ ipcMain.on('cleanup', () => {
 
 // Monerod status data stream return to front end
 ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
-  monerodLatestData$ = moneroService.monerodLatestData$.subscribe(data => {
+  monerodLatestData$ = moneroManager.monerodLatestData$.subscribe(data => {
     event.reply(NodeStreamList.MONEROD_STATUS, data);
   });
 });

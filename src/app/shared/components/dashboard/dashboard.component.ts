@@ -17,13 +17,13 @@ interface DashboardState {
 export class DashboardComponent implements OnInit, OnDestroy {
 
   widgets = [
-    'app-monerochan-slideshow',
-    'app-monerod-status-basic',
-    'app-monerod-timer',
-    'app-monerod-controller',
-    'app-radio',
-    'app-updater',
-    'app-donation'
+    'monerochan-slideshow',
+    'monerod-status-basic',
+    'monerod-timer',
+    'monerod-controller',
+    'radio',
+    'updater',
+    'donation'
   ];
 
   selectVal = '';
