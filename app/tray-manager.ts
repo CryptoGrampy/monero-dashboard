@@ -128,7 +128,7 @@ export class TrayManager {
       { label: 'Start Node', type: 'normal', click: () => this.monerodInstance.startDaemon() },
       { label: 'Stop Node', type: 'normal', click: () => this.onStopDaemon()},
       // { label: 'Restart Node', type: 'normal' },
-      { id: 'autostart', label: 'Autostart on Boot', type: 'checkbox', checked: this.trayState.autostart, click: (ref: MenuItem) => this.setAutostart(ref.checked)},
+      // { id: 'autostart', label: 'Autostart on Boot', type: 'checkbox', checked: this.trayState.autostart, click: (ref: MenuItem) => this.setAutostart(ref.checked)},
       // { label: 'Sep3', type: 'separator' },
       // { label: 'Settings', type: 'normal' },
       { label: 'Sep4', type: 'separator' },

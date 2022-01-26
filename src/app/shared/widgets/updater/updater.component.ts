@@ -15,15 +15,16 @@ export class UpdaterComponent implements OnInit, OnDestroy {
   private subscription$: Subscription;
 
   constructor(
-    private readonly monerodService: MonerodControllerService
+    private readonly monerodService: MonerodControllerService,
+    private ngZone: NgZone
   ) { }
 
   ngOnInit(): void {
     this.subscription$ = this.monerodService.getMoneroStatus().subscribe(statusChange => {
-      this.updateAvailable = statusChange.updateAvailable;
-      this.version = statusChange.version;
-      this.isOnline = !statusChange.isOffline;
-    });
+        this.updateAvailable = statusChange.updateAvailable;
+        this.version = statusChange.version;
+        this.isOnline = !statusChange.isOffline;
+    })
   }
 
   ngOnDestroy(): void {
