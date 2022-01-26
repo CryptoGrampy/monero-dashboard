@@ -1,5 +1,15 @@
 # Monero Dashboard
 
+- [Monero Dashboard](#monero-dashboard)
+  - [Who](#who)
+  - [Install](#install)
+  - [Build](#build)
+  - [TODOs](#todos)
+  - [Where to go from here](#where-to-go-from-here)
+  - [Widget ideas](#widget-ideas)
+  - [Architecture thoughts](#architecture-thoughts)
+
+
 This is first and foremost, a proof of concept / art project. It's meant to be an extremely crufty catch-all for things that may not make sense to put into say, Monero GUI. Does a carousel of dancing Monerochans belong in the GUI? Probably not, but it does belong in the Monero Dashboard as a widget, with a link to the Monero Art Fund.
 
 ## Who
@@ -75,6 +85,9 @@ npm run electron:build
 - Data Charts
 
 ## Architecture thoughts
+
+App Architecture: 
+![App Architecture](./app-arch.png)
 
 - Widgets
   - different types- stateful vs non-stateful widget
