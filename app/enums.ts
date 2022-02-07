@@ -22,11 +22,19 @@ export enum NodeApiList {
 }
 
 
+
+
+
+
+
+
 export enum MonerodControllerCommands {
   START,
   STOP,
   UPDATE,
-  ASK_MONEROD_CONFIG
+  ASK_MONEROD_CONFIG,
+  START_SOLO_MINING,
+  STOP_SOLO_MINING
 }
 
 export enum TrayControllerCommands {
@@ -34,9 +42,11 @@ export enum TrayControllerCommands {
   STOP_AUTOSTART
 }
 
+
 export enum NodeStreamList {
   STREAM_CLEANUP = 'stream-cleanup',
-  MONEROD_STATUS = 'monerod-status'
+  MONEROD_STATUS = 'monerod-status',
+  MONEROD_MINING_STATUS = 'monerod-mining-status'
 }
 
 export type WidgetState = {

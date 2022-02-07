@@ -23,7 +23,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     'monerod-controller',
     'radio',
     'updater',
-    'donation'
+    'donation',
+    'lottery'
   ];
 
   selectVal = '';

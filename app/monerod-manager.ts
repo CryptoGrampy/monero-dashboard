@@ -2,8 +2,25 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { dialog } from 'electron';
 const monerojs = require('monero-javascript');
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, defer, delay, Observable, repeat, share, tap } from 'rxjs';
 import ElectronStore from 'electron-store';
+import { from } from 'rxjs';
+import { interval } from 'rxjs';
+import { switchMap } from 'rxjs';
+import { takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { takeWhile } from 'rxjs';
+import { map } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
+import { Subject } from 'rxjs';
+
+export interface MoneroMiningState {
+  isActive?: boolean;
+  speed?: number;
+  numThreads?: number;
+  address?: string;
+  isBackground?: boolean;
+}
 
 // Return object from monero-javascript getInfo().state
 // Consider moving to shared types.ts where front/backend can import
@@ -66,11 +83,12 @@ export class MonerodManager {
   public daemon: any;
   private readonly monerodStatusSubject: BehaviorSubject<MonerodStatus> = new BehaviorSubject(MonerodStatus.OFFLINE);
   private readonly store = new ElectronStore<MonerodStore>();
-  private readonly monerodLatestDataSubject: BehaviorSubject<MoneroDaemonState> = new BehaviorSubject({isOffline: true} as MoneroDaemonState);
+  private readonly monerodLatestDataSubject: BehaviorSubject<MoneroDaemonState> = new BehaviorSubject({ isOffline: true } as MoneroDaemonState);
+  private readonly monerodMinerLatestDataSubject: Subject<MoneroMiningState> = new Subject();
+
   // private getDaemonInfoRequest$?: Subscription
 
   private getInfoInterval?: NodeJS.Timer;
-  private getIsConnectedInterval?: NodeJS.Timer;
 
   // TODO: Monerod startup stuff - config should be user editable and get saved to store
   // TODO: Consider RPC-only connections to remote Monerod
@@ -102,8 +120,18 @@ export class MonerodManager {
     return this.monerodStatusSubject.asObservable();
   }
 
+  public get monerodMiningStatus$(): Observable<MoneroMiningState> {
+    return this.monerodMinerLatestDataSubject.asObservable();
+  }
+
 
   public async startDaemon() {
+    try {
+      console.log(await this.daemon.isConnected());
+    } catch (err) {
+      console.log('didnt work');
+    }
+
     /**
      * TODO: Make this work if no connex available
      * TODO: Restart daemon when config changes (subscribe to config changes with rxjs)
@@ -131,20 +159,20 @@ export class MonerodManager {
     // TODO: Move stop tasks to a cleanup method?
     if (this.monerodStatusSubject.value === MonerodStatus.ONLINE) {
 
-    this.monerodStatusSubject.next(MonerodStatus.STOPPING);
+      this.monerodStatusSubject.next(MonerodStatus.STOPPING);
 
-    if (this.getInfoInterval) {
-      clearInterval(this.getInfoInterval);
+      if (this.getInfoInterval) {
+        clearInterval(this.getInfoInterval);
+      }
+
+      this.daemon.stopProcess().then((res) => {
+        console.log('stopped', res);
+      });
     }
-
-    this.daemon.stopProcess().then((res) => {
-      console.log('stopped', res);
-    });
-  }
   }
 
   // TODO: Add Restart.  call stopDaemon, wait for stopped, call start Daemon
-  public async restartDaemon() {}
+  public async restartDaemon() { }
 
   // TODO: Does this actually work?
   public async updateDaemon() {
@@ -173,6 +201,22 @@ export class MonerodManager {
     }
   }
 
+  public async startSoloMining() {
+    const address = '4A29yQbw6Lk6jCf1PdBBGa9FpEWd1mRmXTC7ZHpQHi9B2KdQedwcVUJCBWJL1EcqoTWuuLfsLCbLCDo2cywnt6jXVpgdDSQ';
+    const numThreads = 4;
+    const isBackground = false;
+    const ignoreBattery = true;
+    await this.daemon.startMining(address, numThreads, isBackground, ignoreBattery);
+
+    this.pollMiningStatus();
+  }
+
+  public async stopSoloMining() {
+    await this.daemon.stopMining();
+
+    // this.miningStatusSubscription$.unsubscribe();
+
+  }
   // Retrieves Monerod filepath from electron-store
   public getMonerodFilepath(): string {
     return this.store.get('monerodStore.monerodFilepath');
@@ -181,6 +225,27 @@ export class MonerodManager {
   // Retrieves Monerod filepath from electron-store
   public getMonerodConfigFilepath(): string {
     return this.store.get('monerodStore.monerodConfigFilepath');
+  }
+
+  private pollMiningStatus() {
+    const status = interval(10000).pipe(
+      switchMap(
+        (async () => await this.daemon.getMiningStatus()),
+      ),
+      distinctUntilChanged(),
+      map(data => data.state),
+      takeWhile(data => data.isActive === true),
+    ).subscribe({
+      error: (() => {
+        console.log('pollMiningStatus subscription error');
+        // TODO if user turns off monerod while mining, subscription completes.  perhaps handle this better
+      }),
+      next: data => {
+        console.log('polling', data);
+        this.monerodMinerLatestDataSubject.next(data);
+      },
+      complete: () => console.log('complete')
+    });
   }
 
   private pollDaemonGetInfo() {
@@ -208,33 +273,30 @@ export class MonerodManager {
   }
 
   private pollDaemonGetIsConnected() {
-    /**
-     * Check if Daemon connected, update subject, if not connected (i.e. http error response), update subject with offline
-     * OR perhaps use the error to push an empty or undefined object to the data stream rather than creating a new subject and let UI handle that
-     */
-    this.getIsConnectedInterval = setInterval(async () => {
-      try {
-        const connected = await this.daemon.isConnected();
-
-        if (connected === true) {
+    interval(10000).pipe(
+      switchMap(
+        (async () => await this.daemon.isConnected()),
+      ),
+      distinctUntilChanged(),
+      tap(status => {
+        if (status === true) {
           this.monerodStatusSubject.next(MonerodStatus.ONLINE);
+        } else {
+          this.monerodStatusSubject.next(MonerodStatus.OFFLINE);
+          this.monerodLatestDataSubject.next({ ...this.monerodLatestDataSubject.value, ...{ isOffline: true } });
+          console.log('offline');
         }
-
-        // Disconnect after monerod is fully stopped
-        if (this.monerodStatusSubject.value === MonerodStatus.STOPPING) {
-          if (connected === false) {
-            this.monerodStatusSubject.next(MonerodStatus.OFFLINE);
-            this.monerodLatestDataSubject.next({...this.monerodLatestDataSubject.value, ...{ isOffline: true } });
-            clearInterval(this.getIsConnectedInterval);
-          }
-        }
-      } catch (err) {
-        console.log(err);
+      }),
+      takeWhile(status => status !== false)
+    ).subscribe({
+      error: (err) => console.log('isConnected subscription error', err),
+      complete: () => {
+        this.monerodStatusSubject.next(MonerodStatus.OFFLINE);
+        this.monerodLatestDataSubject.next({ ...this.monerodLatestDataSubject.value, ...{ isOffline: true } });
+        console.log('poll daemon completed');
       }
-    }, 10000);
+    });
   }
-
-
 }
 
 // TODO move monerod ipc event listeners here

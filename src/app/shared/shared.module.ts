@@ -18,6 +18,7 @@ import { KtdGridModule } from '@katoid/angular-grid-layout';
 import { UpdaterComponent } from './widgets/updater/updater.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { DonationComponent } from './widgets/donation/donation.component';
+import { LotteryComponent } from './widgets/lottery/lottery.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { DonationComponent } from './widgets/donation/donation.component';
     MonerochanSlideshowComponent,
     RadioComponent,
     UpdaterComponent,
-    DonationComponent
+    DonationComponent,
+    LotteryComponent
   ],
   imports: [
     CommonModule,

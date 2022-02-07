@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, nativeImage, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
-import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList  } from './enums';
+import { IpcInvokeEnum, NodeApiList, MonerodControllerCommands, TrayControllerCommands, NodeStreamList } from './enums';
 import { Subscription } from 'rxjs';
 import { MonerodManager } from './monerod-manager';
 import { TrayManager } from './tray-manager';
@@ -11,10 +11,12 @@ import { WidgetStoreService } from './widget-store-service';
 let win: BrowserWindow = null;
 const moneroManager = new MonerodManager();
 let monerodLatestData$: Subscription;
+let monerodMinerLatestData$: Subscription;
+
 const widgetStateStoreService = new WidgetStoreService();
 
 const args = process.argv.slice(1);
-  const serve = args.some(val => val === '--serve');
+const serve = args.some(val => val === '--serve');
 
 const bootstrap = async () => {
   if (moneroManager.getMonerodFilepath() === undefined) {
@@ -48,6 +50,10 @@ const bootstrap = async () => {
           await moneroManager.stopDaemon();
         } else if (data === MonerodControllerCommands.UPDATE) {
           await moneroManager.updateDaemon();
+        } else if (data === MonerodControllerCommands.START_SOLO_MINING) {
+          await moneroManager.startSoloMining();
+        } else if (data === MonerodControllerCommands.STOP_SOLO_MINING) {
+          await moneroManager.stopSoloMining();
         } else if (data === MonerodControllerCommands.ASK_MONEROD_CONFIG) {
           await moneroManager.askMonerodConfigFilePath();
         }
@@ -79,6 +85,10 @@ const cleanup = () => {
   if (monerodLatestData$) {
     monerodLatestData$.unsubscribe();
   }
+
+  if (monerodMinerLatestData$) {
+    monerodMinerLatestData$.unsubscribe();
+  }
 };
 
 ipcMain.on('cleanup', () => {
@@ -88,6 +98,14 @@ ipcMain.on('cleanup', () => {
 // Monerod status data stream return to front end
 ipcMain.on(String(NodeStreamList.MONEROD_STATUS), (event, arg) => {
   monerodLatestData$ = moneroManager.monerodLatestData$.subscribe(data => {
+    event.reply(NodeStreamList.MONEROD_STATUS, data);
+  });
+});
+
+ipcMain.on(String(NodeStreamList.MONEROD_MINING_STATUS), (event, arg) => {
+  console.log('event', event);
+  monerodMinerLatestData$ = moneroManager.monerodMiningStatus$.subscribe(data => {
+    console.log('status', data);
     event.reply(NodeStreamList.MONEROD_STATUS, data);
   });
 });
@@ -123,7 +141,7 @@ function createWindow(): BrowserWindow {
     let pathIndex = './index.html';
 
     if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-       // Path when running electron in local folder
+      // Path when running electron in local folder
       pathIndex = '../dist/index.html';
     }
 

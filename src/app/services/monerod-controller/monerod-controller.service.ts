@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BehaviorSubject as Subject, Observable } from 'rxjs';
 import { NodeApiList, MonerodControllerCommands, NodeStreamList } from '../../../../app/enums';
-import { MoneroDaemonState } from '../../../../app/monerod-manager';
+import { MoneroDaemonState, MoneroMiningState } from '../../../../app/monerod-manager';
 import { ElectronService } from '../../core/services/electron/electron.service';
 
 @Injectable({
@@ -12,6 +12,7 @@ import { ElectronService } from '../../core/services/electron/electron.service';
 })
 export class MonerodControllerService {
   private moneroStatus$: BehaviorSubject<Partial<MoneroDaemonState>> = new BehaviorSubject({isOffline: true});
+  private moneroMiningStatus$: BehaviorSubject<Partial<MoneroMiningState>> = new BehaviorSubject({isActive: false});
 
   constructor(private readonly electronService: ElectronService) {
     this.initMonerodDataStream();
@@ -19,6 +20,10 @@ export class MonerodControllerService {
 
   getMoneroStatus(): Observable<Partial<MoneroDaemonState>> {
     return this.moneroStatus$.asObservable();
+  }
+
+  getMoneroMiningStatus(): Observable<Partial<MoneroMiningState>>{
+    return this.moneroMiningStatus$.asObservable();
   }
 
   start() {
@@ -45,12 +50,36 @@ export class MonerodControllerService {
     });
   }
 
+  startSoloMining() {
+    this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.START_SOLO_MINING).then(data => {
+      console.log('started solo mining');
+    });
+
+    this.initMonerodMiningStream();
+  }
+
+  stopSoloMining() {
+    this.electronService.saveData(NodeApiList.MONEROD_CONTROLLER, MonerodControllerCommands.STOP_SOLO_MINING).then(data => {
+      console.log('stopped solo mining');
+    });
+  }
+
   // Create data subscription on init
   private initMonerodDataStream() {
     this.electronService.getBackendDataStream(NodeStreamList.MONEROD_STATUS).then(stream => {
       stream.subscribe(data => {
         if (data) {
           this.moneroStatus$.next(data);
+        }
+      });
+    });
+  }
+
+  private initMonerodMiningStream() {
+    this.electronService.getBackendDataStream(NodeStreamList.MONEROD_MINING_STATUS).then(stream => {
+      stream.subscribe(data => {
+        if (data) {
+          this.moneroMiningStatus$.next(data);
         }
       });
     });

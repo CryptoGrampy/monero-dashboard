@@ -24,7 +24,7 @@ export class UpdaterComponent implements OnInit, OnDestroy {
         this.updateAvailable = statusChange.updateAvailable;
         this.version = statusChange.version;
         this.isOnline = !statusChange.isOffline;
-    })
+    });
   }
 
   ngOnDestroy(): void {
